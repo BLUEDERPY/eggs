@@ -1,4 +1,5 @@
 import { createTheme } from "@mui/material";
+import { getAlertComponents } from "./utils/alert";
 
 let theme = createTheme({
   palette: {
@@ -7,7 +8,7 @@ let theme = createTheme({
       main: "#fc9c04",
     },
     secondary: {
-      main: "#ffebcd",
+      main: "#1a1a2e",
     },
     background: {
       default: "#222237",
@@ -78,6 +79,7 @@ theme = createTheme(theme, {
     },
   },
   components: {
+    MuiAlert: getAlertComponents(theme),
     MuiButtonGroup: {
       variants: [
         {

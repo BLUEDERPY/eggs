@@ -24,6 +24,7 @@ import useLoanByAddress from "../hooks/useLoanByAddress";
 import { formatEther } from "viem";
 import theme from "../themes";
 import { AlertTriangle } from "lucide-react";
+import { LendingTabs } from "./LendingTabs";
 
 export const LendingInterface: React.FC = () => {
   const {
@@ -112,100 +113,41 @@ export const LendingInterface: React.FC = () => {
           ) : (
             <>
               {/* Borrow More Section */}
-              <Stack
-                sx={{
-                  py: { xs: "24px", sm: 4, md: 6 },
-                  px: { xs: "24px", sm: 6, md: 8 },
-                }}
-                spacing={3}
+
+              <LendingTabs />
+
+              {/* Close Position Dialog */}
+              <Dialog
+                open={showCloseDialog}
+                onClose={() => setShowCloseDialog(false)}
               >
-                <Box sx={{ mt: 2 }}>
-                  <Typography variant="subtitle2" gutterBottom>
-                    Borrow More
+                <DialogTitle>Confirm Close Position</DialogTitle>
+                <DialogContent>
+                  <Alert severity="warning" sx={{ mb: 2 }}>
+                    Closing your position will incur a 1% fee on the total
+                    position value.
+                  </Alert>
+                  <Typography>
+                    Are you sure you want to close your position? This action
+                    cannot be undone.
                   </Typography>
-                  <TextField
-                    fullWidth
-                    type="number"
-                    value={borrowAmount}
-                    onChange={(e) => setBorrowAmount(e.target.value)}
-                    placeholder="Enter amount to borrow"
-                    sx={{ mb: 1 }}
-                  />
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={() => setShowCloseDialog(false)}>
+                    Cancel
+                  </Button>
                   <Button
+                    onClick={() => {
+                      onClose();
+                      setShowCloseDialog(false);
+                    }}
+                    color="error"
                     variant="contained"
-                    disabled={!borrowAmount}
-                    onClick={() => onRepay(borrowAmount)}
-                    fullWidth
                   >
-                    Borrow Additional SONIC
+                    Close Position
                   </Button>
-                </Box>
-
-                {/* Extend Duration Section */}
-                <Box sx={{ mt: 2 }}>
-                  <Typography variant="subtitle2" gutterBottom>
-                    Extend Duration (days): {extendDays}
-                  </Typography>
-                  <Slider
-                    value={extendDays}
-                    onChange={handleExtendChange}
-                    min={1}
-                    max={365}
-                    valueLabelDisplay="auto"
-                    sx={{ mb: 1 }}
-                  />
-                  <Button
-                    variant="outlined"
-                    onClick={() => onExtend(extendDays)}
-                    fullWidth
-                  >
-                    Extend Loan Duration
-                  </Button>
-                </Box>
-
-                {/* Close Position Button */}
-                <Button
-                  variant="outlined"
-                  color="error"
-                  onClick={() => setShowCloseDialog(true)}
-                  startIcon={<AlertTriangle size={16} />}
-                >
-                  Close Position
-                </Button>
-
-                {/* Close Position Dialog */}
-                <Dialog
-                  open={showCloseDialog}
-                  onClose={() => setShowCloseDialog(false)}
-                >
-                  <DialogTitle>Confirm Close Position</DialogTitle>
-                  <DialogContent>
-                    <Alert severity="warning" sx={{ mb: 2 }}>
-                      Closing your position will incur a 1% fee on the total
-                      position value.
-                    </Alert>
-                    <Typography>
-                      Are you sure you want to close your position? This action
-                      cannot be undone.
-                    </Typography>
-                  </DialogContent>
-                  <DialogActions>
-                    <Button onClick={() => setShowCloseDialog(false)}>
-                      Cancel
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        onClose();
-                        setShowCloseDialog(false);
-                      }}
-                      color="error"
-                      variant="contained"
-                    >
-                      Close Position
-                    </Button>
-                  </DialogActions>
-                </Dialog>
-              </Stack>
+                </DialogActions>
+              </Dialog>
 
               <Box
                 sx={{
