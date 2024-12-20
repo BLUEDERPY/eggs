@@ -1,9 +1,6 @@
 import { createTheme } from "@mui/material";
 
 let theme = createTheme({
-  colorSchemes: {
-    dark: true,
-  },
   palette: {
     mode: "dark",
     primary: {
@@ -19,7 +16,7 @@ let theme = createTheme({
     success: {
       main: "#00d4b5",
     },
-    warning: {
+    error: {
       main: "#f44336",
     },
   },
@@ -144,7 +141,28 @@ theme = createTheme(theme, {
         },
       },
     },
+    MuiButtonBase: {
+      styleOverrides: {
+        root: {
+          paddingTop: "3px !important",
+          textTransform: "none",
+          paddingBottom: "0px !important",
+        },
+      },
+    },
     MuiButton: {
+      variants: [
+        {
+          props: { size: "small" },
+          style: {
+            paddingTop: "3px !important",
+            textTransform: "none",
+            paddingBottom: "0px !important",
+            fontSize: "24px",
+            height: "32px",
+          },
+        },
+      ],
       styleOverrides: {
         root: {
           paddingTop: "3px !important",

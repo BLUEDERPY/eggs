@@ -35,6 +35,9 @@ dependencies:
   charting_library:
     specifier: link:@/public/static/charting_library
     version: link:@/public/static/charting_library
+  chroma-js:
+    specifier: ^3.1.2
+    version: 3.1.2
   connectkit:
     specifier: ^1.8.2
     version: 1.8.2(@babel/core@7.26.0)(@tanstack/react-query@5.62.2)(react-dom@18.3.1)(react-is@18.3.1)(react@18.3.1)(viem@2.10.11)(wagmi@2.13.3)
@@ -2883,6 +2886,10 @@ packages:
       readdirp: 3.6.0
     optionalDependencies:
       fsevents: 2.3.3
+    dev: false
+
+  /chroma-js@3.1.2:
+    resolution: {integrity: sha512-IJnETTalXbsLx1eKEgx19d5L6SRM7cH4vINw/99p/M11HCuXGRWL+6YmCm7FWFGIo6dtWuQoQi1dc5yQ7ESIHg==}
     dev: false
 
   /citty@0.1.6:

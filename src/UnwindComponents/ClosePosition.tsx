@@ -19,7 +19,6 @@ const ClosePosition = ({ writeContract }: Props) => {
     <>
       <Box sx={{ marginTop: 4 }} paddingX={2} paddingY={3}>
         <Button
-          size="large"
           variant="contained"
           color="error"
           onClick={() => {

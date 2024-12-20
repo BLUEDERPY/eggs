@@ -1,4 +1,3 @@
-import React from "react";
 import { Button } from "@mui/material";
 import { Wallet } from "lucide-react";
 import { ConnectKitButton } from "connectkit";

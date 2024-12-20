@@ -6,12 +6,12 @@ export default function useLoanByAddress() {
   const { abi, address } = EggsContract;
   const { address: _address } = useAccount();
 
-  const { data } = useReadContract({
+  const { data, refetch } = useReadContract({
     abi,
     address: address as Address,
     functionName: "getLoanByAddress",
     args: [_address],
   });
 
-  return { data };
+  return { data, refetch };
 }

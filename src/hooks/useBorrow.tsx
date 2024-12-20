@@ -3,19 +3,32 @@ import { EggsContract } from "../providers/contracts";
 import useWriteContractAndWaitForConfirm from "./useWriteContractAndWaitForConfirm";
 
 export default function useBorrow() {
-  const { writeContract, isError, isSuccess, isConfirming, isPending, reset } =
-    useWriteContractAndWaitForConfirm();
+  const {
+    writeContract,
+    isError,
+    isSuccess,
+    isConfirming,
+    isPending,
+    isUserError,
+    reset,
+  } = useWriteContractAndWaitForConfirm();
   const { abi, address } = EggsContract;
 
-  const borrow = (eggs: string, sonicAmount: string, days: number) => {
-    const eggsCollateral = parseEther(eggs.toString());
-    const sonicToBorrow = parseEther(sonicAmount.toString());
+  const borrow = (sonicAmount: string, days: number) => {
     writeContract({
       abi,
       address: address as Address,
       functionName: "borrow",
-      args: [eggsCollateral, sonicToBorrow, days],
+      args: [Number(sonicAmount), days],
     });
   };
-  return { borrow, isError, isSuccess, isConfirming, isPending, reset };
+  return {
+    borrow,
+    isError,
+    isSuccess,
+    isConfirming,
+    isPending,
+    isUserError,
+    reset,
+  };
 }

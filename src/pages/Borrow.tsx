@@ -1,22 +1,34 @@
-import { Grid, Typography } from "@mui/material";
-import BorrowWidget from "../BorrowComponents/BorrowWidget";
+import React from "react";
+import { Grid, Typography, Box } from "@mui/material";
+import { LendingInterface } from "../Lending/LendingInterface";
+import { LendingStats } from "../Lending/LendingStats";
 
-const BorrowPage = () => {
+const LendingPage: React.FC = () => {
   return (
     <>
-      <Grid item xs={12} alignSelf={"center"}>
+      <Grid item xs={12} alignSelf="center">
         <Typography padding={1} align="center" variant="h5">
-          {" "}
-          BORROW
+          LENDING
         </Typography>
-        <Typography variant="subtitle1"> BUY, LOCK, BORROW, REPEAT </Typography>
+        <Typography variant="subtitle1" align="center" gutterBottom>
+          Borrow SONIC against your EGGS collateral
+        </Typography>
       </Grid>
-
-      <Grid item xs={12}>
-        <BorrowWidget />
+      <Grid item xs={12} alignSelf="center" mb={"30px"}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", md: "row" },
+            gap: 3,
+            maxWidth: "calc(100dvw - 30px)",
+            alignItems: { xs: "center", md: "flex-start" },
+          }}
+        >
+          <LendingInterface />
+        </Box>
       </Grid>
     </>
   );
 };
 
-export default BorrowPage;
+export default LendingPage;

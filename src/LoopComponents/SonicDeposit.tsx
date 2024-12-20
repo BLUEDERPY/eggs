@@ -62,8 +62,7 @@ const SonicDeposit = (props: Props) => {
               variant="contained"
               onClick={() => setEggsAmount(Number(bal) * 0.25)}
             >
-              {" "}
-              <Typography> 25% </Typography>{" "}
+              25%
             </Button>
             <Button
               size="small"
@@ -73,8 +72,7 @@ const SonicDeposit = (props: Props) => {
               variant="contained"
               onClick={() => setEggsAmount(Number(bal) * 0.5)}
             >
-              {" "}
-              <Typography> 50% </Typography>{" "}
+              50%
             </Button>
             <Button
               size="small"
@@ -84,8 +82,7 @@ const SonicDeposit = (props: Props) => {
               variant="contained"
               onClick={() => setEggsAmount(Number(bal))}
             >
-              {" "}
-              <Typography> 100% </Typography>
+              100%
             </Button>
           </Stack>
         ) : (
@@ -97,8 +94,7 @@ const SonicDeposit = (props: Props) => {
               variant="contained"
               onClick={() => setEggsAmount(Number(bal) * 0.25)}
             >
-              {" "}
-              <Typography> 25% </Typography>
+              25%
             </Button>
             <Button
               style={{ borderWidth: "2px", borderColor: "#87CEEB" }}
@@ -107,8 +103,7 @@ const SonicDeposit = (props: Props) => {
               variant="contained"
               onClick={() => setEggsAmount(Number(bal) * 0.5)}
             >
-              {" "}
-              <Typography> 50% </Typography>{" "}
+              50%
             </Button>
             <Button
               style={{ borderWidth: "2px", borderColor: "#87CEEB" }}
@@ -117,8 +112,7 @@ const SonicDeposit = (props: Props) => {
               variant="contained"
               onClick={() => setEggsAmount(Number(bal))}
             >
-              {" "}
-              <Typography> 100% </Typography>{" "}
+              100%
             </Button>
           </Stack>
         )}

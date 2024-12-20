@@ -65,9 +65,13 @@ const BorrowWidget = () => {
         <LoadingScreen />
       ) : (
         <Stack spacing={5}>
+          <BorrowBox
+            sonicBorrow={sonicBorrow}
+            setSonicBorrow={setSonicBorrow}
+          />
           <EggsDeposit eggsAmount={eggsAmount} setEggsAmount={setEggsAmount} />
           <ExtendDays days={days} setDays={setDays} />
-          <BorrowBox sonicBorrow={sonicBorrow} setSonicBorrow={setSonicBorrow} />
+
           <BorrowButton
             eggs={eggsAmount.toString()}
             sonic={sonicBorrow.toString()}

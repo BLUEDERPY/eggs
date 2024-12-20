@@ -2,6 +2,7 @@ import { Box, Typography, TextField } from "@mui/material";
 import { useContext } from "react";
 import { GlobalContext } from "../providers/global-provider";
 import useEggsToSonic from "../hooks/useEggsToSonic";
+import useSonicToEggs from "../hooks/useSonicToEggs";
 
 interface Props {
   sonicBorrow: number;
@@ -14,13 +15,15 @@ const BorrowBox = ({ sonicBorrow, setSonicBorrow }: Props) => {
 
   const eggsBal = eggsData ? Number(eggsData).toFixed(2).toString() : "0";
 
-  const { data } = useEggsToSonic(eggsBal);
+  const { data: max } = useEggsToSonic(eggsBal);
 
-  const bal = data ? Number(data).toFixed(2).toString() : "0";
+  const { data } = useSonicToEggs(Number(sonicBorrow).toFixed(2).toString());
+
+  const bal = max ? Number(max).toFixed(2).toString() : "0";
 
   const borrowBoxRestrictions = (value: number) => {
     if (value < 0) setSonicBorrow(0);
-    else if (value > Number(bal) * 0.95) setSonicBorrow(Number(bal) * 0.95);
+    else if (value > Number(bal) * 0.99) setSonicBorrow(Number(bal) * 0.99);
     else setSonicBorrow(value);
   };
 
@@ -33,6 +36,7 @@ const BorrowBox = ({ sonicBorrow, setSonicBorrow }: Props) => {
         fullWidth
         onChange={(event) => borrowBoxRestrictions(Number(event.target.value))}
       ></TextField>
+      <Typography> EGGs Collateral required: {data}</Typography>
     </Box>
   );
 };

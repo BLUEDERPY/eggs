@@ -9,6 +9,7 @@ import {
 import { useContext } from "react";
 import { GlobalContext } from "../providers/global-provider";
 import useAccountWithBalance from "../hooks/useAccountWithBalance";
+import useEggsBalance from "../hooks/useEggsBalance";
 
 export interface Props {
   eggsAmount: number;
@@ -18,9 +19,10 @@ export interface Props {
 const EggsDeposit = (props: Props) => {
   //const {data} = useAccountWithBalance();
 
-  //const sonicAmount = Number(sonicers.formatEther(data?.value || '0'));
+  //const ethAmount = Number(ethers.formatEther(data?.value || '0'));
 
-  const { balance } = useContext(GlobalContext);
+  const balance = useEggsBalance();
+  console.log(balance);
   const { data, isPending } = balance;
   const { eggsAmount, setEggsAmount } = props;
   const { isConnected } = useAccountWithBalance();
@@ -62,8 +64,7 @@ const EggsDeposit = (props: Props) => {
               variant="contained"
               onClick={() => setEggsAmount(Number(bal) * 0.25)}
             >
-              {" "}
-              <Typography> 25% </Typography>{" "}
+              25%
             </Button>
             <Button
               size="small"
@@ -73,8 +74,7 @@ const EggsDeposit = (props: Props) => {
               variant="contained"
               onClick={() => setEggsAmount(Number(bal) * 0.5)}
             >
-              {" "}
-              <Typography> 50% </Typography>{" "}
+              50%
             </Button>
             <Button
               size="small"
@@ -84,8 +84,7 @@ const EggsDeposit = (props: Props) => {
               variant="contained"
               onClick={() => setEggsAmount(Number(bal))}
             >
-              {" "}
-              <Typography> 100% </Typography>
+              100%
             </Button>
           </Stack>
         ) : (
@@ -97,8 +96,7 @@ const EggsDeposit = (props: Props) => {
               variant="contained"
               onClick={() => setEggsAmount(Number(bal) * 0.25)}
             >
-              {" "}
-              <Typography> 25% </Typography>
+              25%
             </Button>
             <Button
               style={{ borderWidth: "2px", borderColor: "#87CEEB" }}
@@ -107,8 +105,7 @@ const EggsDeposit = (props: Props) => {
               variant="contained"
               onClick={() => setEggsAmount(Number(bal) * 0.5)}
             >
-              {" "}
-              <Typography> 50% </Typography>{" "}
+              50%
             </Button>
             <Button
               style={{ borderWidth: "2px", borderColor: "#87CEEB" }}
@@ -118,7 +115,7 @@ const EggsDeposit = (props: Props) => {
               onClick={() => setEggsAmount(Number(bal))}
             >
               {" "}
-              <Typography> 100% </Typography>{" "}
+              100%
             </Button>
           </Stack>
         )}

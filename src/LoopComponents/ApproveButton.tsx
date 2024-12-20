@@ -19,7 +19,7 @@ const ApproveButton = ({ eggs, days, writeContract }: Props) => {
   return (
     <>
       {!isConnected ? (
-        <Button size="large" disabled variant="contained">
+        <Button disabled variant="contained">
           {" "}
           Borrow{" "}
         </Button>

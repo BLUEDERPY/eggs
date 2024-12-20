@@ -4,18 +4,23 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { Box, Button, ButtonGroup, useMediaQuery } from "@mui/material";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import { useVisibilityChange } from "@uidotdev/usehooks";
-import { useTheme } from "@mui/material/styles";
 
+import { useTheme } from "@mui/material/styles";
+const WS_URL = "ws://localhost:8000";
 import { reformatData } from "./FormatData";
 
 export const ChartComponent = (props) => {
   const xs = useMediaQuery("(max-width:600px)");
   const theme = useTheme();
   const documentVisible = useVisibilityChange();
-  const [socketUrl, setSocketUrl] = useState("ws://localhost:8000");
+
   const [ready, setReady] = useState(0);
 
-  const { lastMessage, readyState } = useWebSocket(socketUrl, {
+  const wS_URL =
+    (!documentVisible && ready === 1) || documentVisible ? WS_URL : "wss://";
+  console.log((!documentVisible && ready === 1) || documentVisible);
+
+  const { lastMessage, readyState } = useWebSocket(wS_URL, {
     share: true,
 
     shouldReconnect: () => {
@@ -61,12 +66,14 @@ export const ChartComponent = (props) => {
 
       //const val = _data[candelSize][0];
 
-      if (rawData.length > 1 && updatedata.length === 0) {
-        const _data = reformatData(rawData, 1);
+      if (rawData.length > 1) {
+        const _data = reformatData(rawData, candelSize);
         series.setData(_data);
-        chart.timeScale().fitContent();
-        chart.timeScale().scrollToPosition(5);
-        setData(_data);
+        if (updatedata.length == 0) {
+          chart.timeScale().fitContent();
+          chart.timeScale().scrollToPosition(5);
+        }
+        setData(rawData);
       } else if (rawData.length === 1 && updatedata.length > 0) {
         if (
           rawData[0].high != updatedata[updatedata.length - 1].high ||
@@ -103,7 +110,7 @@ export const ChartComponent = (props) => {
         horzLines: { color: "#444" },
       },
       width: chartContainerRef.current.clientWidth,
-      height: window.innerHeight - 510,
+      height: xs ? window.innerHeight - 410 : window.innerHeight - 510,
     });
     chart.timeScale().applyOptions({
       barSpacing: 10,
@@ -144,13 +151,13 @@ export const ChartComponent = (props) => {
     <Card
       sx={{
         width: {
-          xs: "100dvw",
+          xs: "calc(100dvw - 10px)",
           sm: "600px",
-          md: "900px",
-          lg: "1100px",
-          xl: "1300px",
+          md: "500px",
+          lg: "700px",
+          xl: "900px",
         },
-        borderRadius: { xs: "2px", sm: "16px" },
+        borderRadius: { sm: "16px" },
         position: "relative",
       }}
     >

@@ -13,6 +13,7 @@ export const FooterLink: React.FC<FooterLinkProps> = ({ href, children }) => {
       sx={{
         color: 'grey.400',
         textDecoration: 'none',
+        fontSize: '0.875rem',
         '&:hover': {
           color: 'primary.main',
         },
@@ -21,4 +22,4 @@ export const FooterLink: React.FC<FooterLinkProps> = ({ href, children }) => {
       {children}
     </Link>
   );
-};
+}
