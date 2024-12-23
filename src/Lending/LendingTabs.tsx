@@ -54,7 +54,7 @@ export const LendingTabs = () => {
         sx={{
           py: { xs: 0 },
           px: { xs: "0", sm: 6, md: 8 },
-          mt: 0,
+          mt: "0 !important",
         }}
       >
         <TabPanel value={value} index={0}>

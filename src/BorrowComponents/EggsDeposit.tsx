@@ -22,7 +22,7 @@ const EggsDeposit = (props: Props) => {
   //const ethAmount = Number(ethers.formatEther(data?.value || '0'));
 
   const balance = useEggsBalance();
-  console.log(balance);
+  // ////console.log(balance);
   const { data, isPending } = balance;
   const { eggsAmount, setEggsAmount } = props;
   const { isConnected } = useAccountWithBalance();

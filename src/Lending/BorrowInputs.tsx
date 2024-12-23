@@ -5,8 +5,10 @@ import {
   Button,
   InputAdornment,
   Typography,
+  Grid,
 } from "@mui/material";
 import { formatEther } from "viem";
+import useAccountWithBalance from "../hooks/useAccountWithBalance";
 
 interface BorrowInputsProps {
   borrowAmount: string;
@@ -15,6 +17,7 @@ interface BorrowInputsProps {
   setDuration: (value: number) => void;
   onMaxClick: () => void;
   balance: string;
+  minDuration: number;
 }
 
 export const BorrowInputs: React.FC<BorrowInputsProps> = ({
@@ -24,16 +27,37 @@ export const BorrowInputs: React.FC<BorrowInputsProps> = ({
   setDuration,
   onMaxClick,
   balance,
+  minDuration,
 }) => {
+  const { data: sonic } = useAccountWithBalance();
   return (
     <Stack spacing={0}>
-      <Typography
-        sx={{ textAlign: "right" }}
-        variant="body2"
-        color="text.secondary"
+      <Grid
+        container
+        direction="row"
+        justifyContent="space-between"
+        width={"100%"}
+        mb={2}
       >
-        Balance: {Number(formatEther(balance || 0)).toFixed(2)} EGGS
-      </Typography>
+        <Grid item>
+          <Typography
+            sx={{ textAlign: "left" }}
+            variant="body2"
+            color="text.secondary"
+          >
+            {Number(sonic?.formatted || "0").toFixed(2)} SONIC
+          </Typography>
+        </Grid>
+        <Grid item>
+          <Typography
+            sx={{ textAlign: "right" }}
+            variant="body2"
+            color="text.secondary"
+          >
+            {Number(formatEther(balance || 0)).toFixed(2)} EGGS
+          </Typography>
+        </Grid>
+      </Grid>
       <Stack spacing={2}>
         <TextField
           label="Borrow Amount"
@@ -57,7 +81,7 @@ export const BorrowInputs: React.FC<BorrowInputsProps> = ({
           type="number"
           value={duration}
           onChange={(e) => setDuration(Number(e.target.value))}
-          inputProps={{ min: 0, max: 365 }}
+          inputProps={{ min: minDuration, max: minDuration + 365 }}
           helperText="Loan duration in days (1-365)"
         />
       </Stack>

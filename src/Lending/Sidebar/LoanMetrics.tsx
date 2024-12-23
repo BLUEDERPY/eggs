@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Box,
   Typography,
@@ -6,7 +6,7 @@ import {
   useTheme,
   Button,
 } from "@mui/material";
-import { formatCurrency } from "../../utils/formatters";
+import { formatCurrency, nFormatter } from "../../utils/formatters";
 import useLoanByAddress from "../../hooks/useLoanByAddress";
 import useEggsToSonic from "../../hooks/useEggsToSonic";
 import { formatEther, parseEther } from "viem";
@@ -14,50 +14,37 @@ import { TrendingUp, Clock, Settings } from "lucide-react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import { useVisibilityChange } from "@uidotdev/usehooks";
 import chroma from "chroma-js";
+import useRefresh from "../../hooks/useRefresh";
 
 const WS_URL = "ws://localhost:8000";
 
 export const LoanMetrics: React.FC = () => {
   const theme = useTheme();
 
-  const documentVisible = useVisibilityChange();
-
-  const [ready, setReady] = useState(0);
-
-  const wS_URL =
-    (!documentVisible && ready === 1) || documentVisible ? WS_URL : "wss://";
-  console.log((!documentVisible && ready === 1) || documentVisible);
-
-  const { lastMessage, readyState } = useWebSocket(wS_URL, {
-    share: true,
-
-    shouldReconnect: () => {
-      return documentVisible;
-    },
-
-    heartbeat: true,
-  });
-
-  useEffect(() => {
-    setReady(readyState);
-  }, [readyState]);
-
   const { data: loanData } = useLoanByAddress();
 
-  const { data: conversionRate, refetch } = useEggsToSonic(
-    loanData ? loanData[0] : 0
+  const { data: _conversionRate, isSuccess } = useRefresh(
+    (loanData && loanData[0]) || parseEther("0")
   );
-  useEffect(() => {
-    if (lastMessage && lastMessage.data !== "ping") refetch();
-  }, [lastMessage]);
 
-  console.log(conversionRate);
+  const [conversionRate, setConversionRate] = useState(undefined);
+
+  useEffect(() => {
+    if (_conversionRate) {
+      //console.log(_conversionRate);
+      setConversionRate(_conversionRate);
+    }
+  }, [_conversionRate]);
+
+  // ////console.log(conversionRate);
 
   // Calculate values
   const collateralEggs = loanData ? Number(formatEther(loanData[0])) : 0;
   const borrowedSonic = loanData ? Number(formatEther(loanData[1])) : 0;
   const borrowedSonicRaw = loanData ? loanData[1] : 0;
-
+  console.log(conversionRate);
+  console.log(borrowedSonicRaw);
+  //console.log(isSuccess);
   const positionValue =
     conversionRate && borrowedSonicRaw
       ? Number(formatEther(conversionRate - borrowedSonicRaw))
@@ -92,7 +79,7 @@ export const LoanMetrics: React.FC = () => {
   const healthFactor = loanData
     ? dateDiff(new Date(Number(loanData[2]) * 1000))
     : { days: 0, hours: 0, minutes: 0 };
-  console.log(healthFactor.minutes);
+  // ////console.log(healthFactor.minutes);
 
   const scale = chroma
     .scale([
@@ -117,7 +104,7 @@ export const LoanMetrics: React.FC = () => {
           Position Value
         </Typography>
         <Typography variant="h4" sx={{ mb: 2 }}>
-          {formatCurrency(positionValue)} SONIC
+          {nFormatter(positionValue, 2)} SONIC
         </Typography>
       </Box>
 
@@ -174,11 +161,11 @@ export const LoanMetrics: React.FC = () => {
         items={[
           {
             label: "Total Collateral",
-            value: `${formatCurrency(collateralEggs)} EGGS`,
+            value: `${nFormatter(collateralEggs, 2)} EGGS`,
           },
           {
             label: "Borrowed Amount",
-            value: `${formatCurrency(borrowedSonic)} SONIC`,
+            value: `${nFormatter(borrowedSonic, 2)} SONIC`,
           },
         ]}
       />

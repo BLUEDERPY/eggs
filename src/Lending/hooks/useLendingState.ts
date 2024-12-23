@@ -6,16 +6,23 @@ import { GlobalContext } from "../../providers/global-provider";
 import useSonicToEggs from "../../hooks/useSonicToEggs";
 import useGetLoanFee from "../../hooks/useGetLoanFee";
 import { formatEther, parseEther } from "viem";
+import useRefresh2 from "../../hooks/useRefresh2";
+import useLoanByAddress from "../../hooks/useLoanByAddress";
 
 export const useLendingState = () => {
-  const [duration, setDuration] = useState(0);
   const { borrow, isPending, isConfirming, isSuccess, isError, isUserError } =
     useBorrow();
   const { status, setStatus } = useContext(GlobalContext);
 
+  const { data: balance, refetch } = useEggsBalance();
+  const { data: max } = useEggsToSonic(balance);
+  const { data: loan, refetch: refetchLoan } = useLoanByAddress();
   useEffect(() => {
-    if (isSuccess) refetch();
-    setStatus(
+    if (isSuccess) {
+      refetch();
+      refetchLoan();
+    }
+    /*setStatus(
       isError
         ? "ERROR"
         : isUserError
@@ -38,48 +45,79 @@ export const useLendingState = () => {
         : isPending
         ? `Your transaction is pending`
         : ""
-    );
+    );*/
   }, [isError, isUserError, isSuccess, isConfirming, isPending]);
 
-  const { data: balance, refetch } = useEggsBalance();
-  const { data: max } = useEggsToSonic(balance);
+  function dateDiff(date1, date2) {
+    const msDiff = date1.getTime() - date2.getTime();
+    const days = Math.floor(msDiff / (1000 * 60 * 60 * 24));
+    return days;
+  }
+
+  const borrowed = loan ? loan[1] : undefined;
   const [borrowAmount, _setBorrowAmount] = useState(undefined);
   const setBorrowAmount = (value: string) => {
     _setBorrowAmount(parseEther(value));
   };
-  const { data: conversionRate } = useSonicToEggs(borrowAmount || "0");
-
+  const { data: _conversionRate, isSuccess: refreshSuccess } = useRefresh2(
+    borrowAmount || "0"
+  );
+  const conversionRate = useMemo(() => {
+    if (_conversionRate)
+      return parseEther(Number(formatEther(_conversionRate)).toFixed(4));
+  }, [_conversionRate, refreshSuccess]);
   //@ts-expect-error
-  const { data: fee } = useGetLoanFee(conversionRate, duration);
 
+  const minDuration = useMemo(() => {
+    if (borrowed) return dateDiff(new Date(Number(loan[2]) * 1000), new Date());
+  }, [borrowed, loan]);
+
+  const [duration, setDuration] = useState(minDuration || 0);
+
+  const { data: fee } = useGetLoanFee(conversionRate, duration);
+  const { data: additonalFee } = useGetLoanFee(
+    borrowed || parseEther("0"),
+    borrowed
+      ? dateDiff(new Date(Number(loan[2]) * 1000), new Date()) - duration - 1
+      : 0
+  );
   const isTransactionOccuring = useMemo(() => {
     return status !== "NONE"; // 120% collateral ratio required
   }, [status]);
 
   const collateralRequired = useMemo(() => {
-    if (!borrowAmount || !conversionRate || !fee) return 0;
-    const amount = Number(formatEther(borrowAmount));
-    const borrowingFee = Number(formatEther(fee)); // 10% APR
-    const rate = Number(formatEther(conversionRate));
-    return rate - amount - borrowingFee; // 120% collateral ratio required
+    if (borrowAmount && conversionRate && fee) {
+      const amount = Number(formatEther(borrowAmount));
+      const borrowingFee = Number(formatEther(fee)); // 10% APR
+      const rate = Number(formatEther(conversionRate));
+      const c = rate - amount - borrowingFee;
+      return c.toFixed(2); // 120% collateral ratio required
+    }
   }, [borrowAmount, conversionRate, fee]);
   1;
   const fees = useMemo(() => {
-    if (!borrowAmount || !fee || !conversionRate)
-      return { borrowingFee: 0, protocolFee: 0, total: 0 };
+    if (!borrowAmount || !conversionRate || !fee)
+      return {
+        borrowingFee: 0,
+        protocolFee: 0,
+        total: 0,
+      };
+    const _additonalFee = additonalFee ? Number(formatEther(additonalFee)) : 0;
     const amount = Number(formatEther(borrowAmount));
-    const borrowingFee = Number(formatEther(fee)); // 10% APR
+    const borrowingFee = Number(formatEther(fee)) + _additonalFee; // 10% APR
     const protocolFee = amount * 0.99; // 0.1% protocol fee
     return {
-      borrowingFee,
-      protocolFee,
-      total: Number(formatEther(conversionRate)),
+      borrowingFee: borrowingFee.toFixed(4),
+      protocolFee: protocolFee.toFixed(4),
+      total: Number(formatEther(conversionRate)).toFixed(4),
     };
-  }, [borrowAmount, fee, conversionRate]);
+  }, [borrowAmount, fee, conversionRate, additonalFee]);
 
   const maxBorrowAmount = useMemo(() => {
+    if (borrowed && borrowed < max) return Number(max - borrowed).toString();
+    else if (borrowed && borrowed > max) return "0";
     return Number(max).toString();
-  }, [max]);
+  }, [max, borrowed]);
 
   const isValid = useMemo(() => {
     return (
@@ -102,8 +140,13 @@ export const useLendingState = () => {
     return "";
   }, [borrowAmount, maxBorrowAmount, duration]);
 
-  const handleMaxBorrow = () => {
-    _setBorrowAmount(max);
+  const handleMaxBorrow = async () => {
+    console.log(max);
+    console.log(additonalFee);
+    if (additonalFee && additonalFee < max)
+      _setBorrowAmount(max - additonalFee);
+    else if (additonalFee && additonalFee > max) setBorrowAmount("0");
+    else _setBorrowAmount(max);
   };
 
   const handleBorrow = async () => {
@@ -119,6 +162,7 @@ export const useLendingState = () => {
     borrow(borrowAmount, duration);
   };
   return {
+    minDuration,
     borrowAmount,
     setBorrowAmount,
     duration,

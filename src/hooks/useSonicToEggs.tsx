@@ -2,6 +2,8 @@ import { Address, formatEther } from "viem";
 import { EggsContract } from "../providers/contracts";
 import { useAccount, useReadContract } from "wagmi";
 import { parseEther } from "viem";
+import { useEffect, useState } from "react";
+import useRefresh from "./useRefresh";
 
 export default function useSonicToEggs(eggs: string) {
   const { abi, address } = EggsContract;
@@ -13,6 +15,7 @@ export default function useSonicToEggs(eggs: string) {
       functionName: "SONICtoEGGSNoTrade",
       args: [eggs],
     });
+  const { update } = useRefresh();
 
   return { data, isSuccess, isPending, isError, error, refetch };
 }

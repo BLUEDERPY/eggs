@@ -18,7 +18,7 @@ export const ChartComponent = (props) => {
 
   const wS_URL =
     (!documentVisible && ready === 1) || documentVisible ? WS_URL : "wss://";
-  console.log((!documentVisible && ready === 1) || documentVisible);
+  // ////console.log((!documentVisible && ready === 1) || documentVisible);
 
   const { lastMessage, readyState } = useWebSocket(wS_URL, {
     share: true,
@@ -86,7 +86,7 @@ export const ChartComponent = (props) => {
             series?.update(__data[__data.length - 1]);
             setData((s) => [...s, rawData[0]]);
           } catch {
-            console.log("Chart Lag");
+            // ////console.log("Chart Lag");
           }
         }
       }
@@ -110,7 +110,7 @@ export const ChartComponent = (props) => {
         horzLines: { color: "#444" },
       },
       width: chartContainerRef.current.clientWidth,
-      height: xs ? window.innerHeight - 410 : window.innerHeight - 510,
+      height: xs ? window.innerHeight - 410 : window.innerHeight - 432,
     });
     chart.timeScale().applyOptions({
       barSpacing: 10,

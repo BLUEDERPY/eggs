@@ -1,13 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Stack, Typography, Slider, Alert, Button, Grid } from "@mui/material";
 import { formatDate } from "../../utils/formatters";
 import useLoanByAddress from "../../hooks/useLoanByAddress";
 import useGetLoanFee from "../../hooks/useGetLoanFee";
 import { formatEther } from "viem";
+import useExtend from "../../hooks/useExtend";
+import useAccountWithBalance from "../../hooks/useAccountWithBalance";
 
 export const ExtendLoanTab = () => {
-  const { data: loanData } = useLoanByAddress();
+  const { data: loanData, refetch: refetchLoan } = useLoanByAddress();
   const [extensionDays, setExtensionDays] = useState(1);
+  const { extendLoan, isSuccess } = useExtend();
+  const { data: balance, refetch } = useAccountWithBalance();
 
   const currentExpiry = loanData
     ? new Date(Number(loanData[2]) * 1000)
@@ -16,15 +20,24 @@ export const ExtendLoanTab = () => {
     currentExpiry.getTime() + extensionDays * 24 * 60 * 60 * 1000
   );
 
-  const { data: fee } = useGetLoanFee(extensionDays.toString(), extensionDays);
+  const { data: fee } = useGetLoanFee(loanData[1], extensionDays);
   const feeAmount = fee ? Number(formatEther(fee)) : 0;
-
-  const handleExtend = async () => {
-    // Implement extension logic
-  };
+  useEffect(() => {
+    if (isSuccess) {
+      refetch();
+      refetchLoan();
+    }
+  }, [isSuccess]);
 
   return (
     <Stack spacing={3}>
+      <Typography
+        sx={{ textAlign: "right" }}
+        variant="body2"
+        color="text.secondary"
+      >
+        Balance: {Number(balance?.formatted).toFixed(4)} SONIC
+      </Typography>
       <Grid
         container
         sx={{
@@ -75,8 +88,8 @@ export const ExtendLoanTab = () => {
 
       <Button
         variant="contained"
-        onClick={handleExtend}
-        disabled={extensionDays <= 0}
+        onClick={() => extendLoan(extensionDays, formatEther(fee))}
+        disabled={extensionDays <= 0 || balance?.value < fee}
         fullWidth
       >
         Extend Loan

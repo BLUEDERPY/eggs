@@ -23,7 +23,7 @@ const LoanWidget = () => {
     isUserError,
     isSuccess,
   } = useWriteContractAndWaitForConfirm();
-  console.log(hash);
+  // ////console.log(hash);
 
   const [showPosition, setShowPosition] = useState(false);
   const { isConnected } = useAccountWithBalance();

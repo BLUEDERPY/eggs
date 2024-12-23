@@ -1,5 +1,5 @@
-import React from 'react';
-import { Box, Button, Stack, TextField, Typography } from '@mui/material';
+import React from "react";
+import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 
 interface SwapInputProps {
   label: string;
@@ -37,7 +37,7 @@ export const SwapInput: React.FC<SwapInputProps> = ({
             <Button
               size="small"
               onClick={onMax}
-              sx={{ minWidth: 'auto', px: 1, py: 0.25 }}
+              sx={{ minWidth: "auto", px: 1, py: 0.25 }}
             >
               MAX
             </Button>
@@ -53,9 +53,9 @@ export const SwapInput: React.FC<SwapInputProps> = ({
         inputProps={{
           min: 0,
           max: Number(balance),
-          step: "any"
+          step: "any",
         }}
       />
     </Box>
   );
-}
+};

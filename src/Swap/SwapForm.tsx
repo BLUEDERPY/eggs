@@ -6,6 +6,7 @@ import { ArrowUpDown } from "lucide-react";
 import useEggsToSonic from "../hooks/useEggsToSonic";
 import useAccountWithBalance from "../hooks/useAccountWithBalance";
 import useEggsBalance from "../hooks/useEggsBalance";
+import { formatEther } from "viem";
 
 export const SwapForm: React.FC = () => {
   const [fromAmount, setFromAmount] = useState<string>("");
@@ -16,7 +17,7 @@ export const SwapForm: React.FC = () => {
   const { data: eggsBalance } = useEggsBalance();
 
   const sonicBalance = balance ? Number(balance.formatted).toFixed(6) : "0";
-  const eggsBalanceFormatted = eggsBalance || "0";
+  const eggsBalanceFormatted = Number(formatEther(eggsBalance || "0"));
 
   const { data: conversionRate } = useEggsToSonic(fromAmount || "0");
 

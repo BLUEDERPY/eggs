@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Typography, Tooltip } from "@mui/material";
 import { Info } from "lucide-react";
 
@@ -12,15 +12,26 @@ interface FeesDisplayProps {
 }
 
 export const FeesDisplay: React.FC<FeesDisplayProps> = ({ fees, duration }) => {
+  const [borrowingFee, setBorrowFee] = useState(0);
+  const [protocolFee, setProtocolFee] = useState(0);
+  const [total, setTotal] = useState(0);
+
+  useEffect(() => {
+    if (fees) {
+      if (fees.borrowingFee && fees.borrowingFee > 0)
+        setBorrowFee(fees.borrowingFee);
+      if (fees.protocolFee && fees.protocolFee > 0)
+        setProtocolFee(Number(fees.protocolFee).toFixed(2));
+      if (fees.total && fees.total > 0) setTotal(fees.total);
+    }
+  }, [fees]);
   return (
     <>
       <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
         <Typography variant="body2" color="text.secondary">
           Borrowing Fee ({duration} days)
         </Typography>
-        <Typography variant="body2">
-          {fees.borrowingFee.toFixed(4)} EGGS
-        </Typography>
+        <Typography variant="body2">{borrowingFee} EGGS</Typography>
       </Box>
 
       <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
@@ -32,9 +43,7 @@ export const FeesDisplay: React.FC<FeesDisplayProps> = ({ fees, duration }) => {
             <Info size={16} />
           </Tooltip>
         </Box>
-        <Typography variant="body2">
-          {fees.protocolFee.toFixed(4)} EGGS
-        </Typography>
+        <Typography variant="body2">{protocolFee} EGGS</Typography>
       </Box>
 
       <Box
@@ -48,9 +57,7 @@ export const FeesDisplay: React.FC<FeesDisplayProps> = ({ fees, duration }) => {
         }}
       >
         <Typography variant="subtitle2">Total</Typography>
-        <Typography variant="subtitle2">
-          {fees.total.toFixed(4)} EGGS
-        </Typography>
+        <Typography variant="subtitle2">{total} EGGS</Typography>
       </Box>
     </>
   );

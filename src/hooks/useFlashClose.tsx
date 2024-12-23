@@ -4,24 +4,27 @@ import useWriteContractAndWaitForConfirm from "./useWriteContractAndWaitForConfi
 
 import useLoanByAddress from "./useLoanByAddress";
 
-export default function useClosePosition() {
+export default function useFlashClose() {
   const { writeContract, isError, isSuccess, isConfirming, isPending, reset } =
     useWriteContractAndWaitForConfirm();
   const { abi, address } = EggsContract;
 
-  const { data } = useLoanByAddress();
   //@ts-expect-error
 
-  const sonic = data ? data[1] : formatEther(0);
-
-  const closePosition = () => {
+  const flashClosePosition = () => {
     writeContract({
       abi,
       address: address as Address,
-      functionName: "closePosition",
+      functionName: "flashClosePosition",
       args: [],
-      value: sonic,
     });
   };
-  return { closePosition, isError, isSuccess, isConfirming, isPending, reset };
+  return {
+    flashClosePosition,
+    isError,
+    isSuccess,
+    isConfirming,
+    isPending,
+    reset,
+  };
 }

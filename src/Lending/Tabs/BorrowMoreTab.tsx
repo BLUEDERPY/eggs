@@ -20,6 +20,7 @@ export const BorrowMoreTab = () => {
     handleMaxBorrow,
     handleBorrow,
     balance,
+    minDuration,
   } = useLendingState();
 
   return (
@@ -27,6 +28,7 @@ export const BorrowMoreTab = () => {
       <BorrowInputs
         borrowAmount={borrowAmount}
         setBorrowAmount={setBorrowAmount}
+        minDuration={minDuration}
         duration={duration}
         setDuration={setDuration}
         onMaxClick={handleMaxBorrow}
@@ -35,7 +37,7 @@ export const BorrowMoreTab = () => {
 
       <Box>
         <CollateralDisplay
-          collateralRequired={collateralRequired}
+          collateralRequired={collateralRequired || 0}
           borrowAmount={borrowAmount}
         />
         <FeesDisplay fees={fees} duration={duration} />

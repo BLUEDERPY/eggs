@@ -64,7 +64,7 @@ export const LendingInterface: React.FC = () => {
         width: {
           xs: "calc(100dvw - 30px)",
           sm: "450px",
-          md: "800px",
+          md: hasPosition ? "800px" : "450px",
         },
         borderRadius: { sm: "16px" },
         position: "relative",
@@ -72,6 +72,36 @@ export const LendingInterface: React.FC = () => {
     >
       {isTransactionOccuring ? (
         <LoadingScreen />
+      ) : !hasPosition ? (
+        <Stack
+          sx={{
+            py: { xs: "24px", sm: 4, md: 6 },
+            px: { xs: "24px", sm: 6, md: 8 },
+          }}
+          spacing={3}
+        >
+          <BorrowInputs
+            borrowAmount={borrowAmount}
+            setBorrowAmount={setBorrowAmount}
+            duration={duration}
+            setDuration={setDuration}
+            onMaxClick={handleMaxBorrow}
+            balance={balance}
+          />
+          <Box>
+            <CollateralDisplay
+              collateralRequired={collateralRequired || 0}
+              borrowAmount={borrowAmount}
+            />
+
+            <FeesDisplay fees={fees} duration={duration} />
+          </Box>
+          <BorrowActions
+            isValid={isValid}
+            errorMessage={errorMessage}
+            onBorrow={handleBorrow}
+          />
+        </Stack>
       ) : (
         <Box
           sx={{
@@ -80,94 +110,58 @@ export const LendingInterface: React.FC = () => {
             gap: 0,
           }}
         >
-          {!hasPosition ? (
-            <Stack
-              sx={{
-                py: { xs: "24px", sm: 4, md: 6 },
-                px: { xs: "24px", sm: 6, md: 8 },
-              }}
-              spacing={3}
-            >
-              <BorrowInputs
-                borrowAmount={borrowAmount}
-                setBorrowAmount={setBorrowAmount}
-                duration={duration}
-                setDuration={setDuration}
-                onMaxClick={handleMaxBorrow}
-                balance={balance}
-              />
-              <Box>
-                <CollateralDisplay
-                  collateralRequired={collateralRequired}
-                  borrowAmount={borrowAmount}
-                />
+          {/* Borrow More Section */}
 
-                <FeesDisplay fees={fees} duration={duration} />
-              </Box>
-              <BorrowActions
-                isValid={isValid}
-                errorMessage={errorMessage}
-                onBorrow={handleBorrow}
-              />
-            </Stack>
-          ) : (
-            <>
-              {/* Borrow More Section */}
+          <LendingTabs />
 
-              <LendingTabs />
-
-              {/* Close Position Dialog */}
-              <Dialog
-                open={showCloseDialog}
-                onClose={() => setShowCloseDialog(false)}
-              >
-                <DialogTitle>Confirm Close Position</DialogTitle>
-                <DialogContent>
-                  <Alert severity="warning" sx={{ mb: 2 }}>
-                    Closing your position will incur a 1% fee on the total
-                    position value.
-                  </Alert>
-                  <Typography>
-                    Are you sure you want to close your position? This action
-                    cannot be undone.
-                  </Typography>
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={() => setShowCloseDialog(false)}>
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      onClose();
-                      setShowCloseDialog(false);
-                    }}
-                    color="error"
-                    variant="contained"
-                  >
-                    Close Position
-                  </Button>
-                </DialogActions>
-              </Dialog>
-
-              <Box
-                sx={{
-                  //borderLeft: { xs: "none", md: 1 },
-                  //borderTop: { xs: 1, md: "none" },
-                  //borderRadius: { sm: "0 16px 16px 0" },
-                  //m: "1px",
-                  //borderColor: `${theme.palette.primary.dark} !important`,
-                  background: `linear-gradient(145deg, ${theme.palette.background.paper} 0%, ${theme.palette.grey[900]} 100%)`,
-                  px: { xs: 0, sm: 4, md: 2 },
-                  pt: { xs: 3, md: 0 },
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
+          {/* Close Position Dialog */}
+          <Dialog
+            open={showCloseDialog}
+            onClose={() => setShowCloseDialog(false)}
+          >
+            <DialogTitle>Confirm Close Position</DialogTitle>
+            <DialogContent>
+              <Alert severity="warning" sx={{ mb: 2 }}>
+                Closing your position will incur a 1% fee on the total position
+                value.
+              </Alert>
+              <Typography>
+                Are you sure you want to close your position? This action cannot
+                be undone.
+              </Typography>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setShowCloseDialog(false)}>Cancel</Button>
+              <Button
+                onClick={() => {
+                  onClose();
+                  setShowCloseDialog(false);
                 }}
+                color="error"
+                variant="contained"
               >
-                <LoanMetrics />
-              </Box>
-            </>
-          )}
+                Close Position
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+          <Box
+            sx={{
+              //borderLeft: { xs: "none", md: 1 },
+              //borderTop: { xs: 1, md: "none" },
+              //borderRadius: { sm: "0 16px 16px 0" },
+              //m: "1px",
+              //borderColor: `${theme.palette.primary.dark} !important`,
+              background: `linear-gradient(145deg, ${theme.palette.background.paper} 0%, ${theme.palette.grey[900]} 100%)`,
+              px: { xs: 0, sm: 4, md: 2 },
+              pt: { xs: 3, md: 0 },
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+          >
+            <LoanMetrics />
+          </Box>
         </Box>
       )}
     </Card>
