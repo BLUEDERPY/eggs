@@ -15,7 +15,7 @@ export default function useSonicToEggs(eggs: string) {
       functionName: "SONICtoEGGSNoTrade",
       args: [eggs],
     });
-  const { update } = useRefresh();
+  const { update } = useRefresh(eggs);
 
   return { data, isSuccess, isPending, isError, error, refetch };
 }

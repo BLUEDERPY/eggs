@@ -34,7 +34,7 @@ const HomePage = () => {
         <Grid item xs={12} alignSelf={"center"}>
           <Typography padding={1} align="center" variant="h5">
             {" "}
-            LOOP{" "}
+            EGG SWAP{" "}
           </Typography>
         </Grid>
       )}

@@ -89,7 +89,7 @@ export const ClosePositionTab = () => {
         </>
       ) : (
         <>
-          {maxRemovable <= 0 ? (
+          {maxRemovable < 0 ? (
             <Alert severity="info">
               Your collateral value must be 1% higher than your borrowed amount
               to use this function.
@@ -110,7 +110,7 @@ export const ClosePositionTab = () => {
           </Stack>
 
           <Button
-            disabled={maxRemovable <= 0}
+            disabled={maxRemovable < 0}
             variant="contained"
             onClick={handleFlashClose}
             color="error"

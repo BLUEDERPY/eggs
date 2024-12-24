@@ -19,7 +19,7 @@ const viemClient = createPublicClient({
 });*/
 const _config = getDefaultConfig({
   // Your dApps chains
-  chains: [sepolia, mainnet],
+  chains: [sepolia, mainnet, localhost],
   storage: createStorage({ storage: window.localStorage }),
 
   transports: {
@@ -29,6 +29,10 @@ const _config = getDefaultConfig({
       "http://localhost:8545"
     ),
     [sepolia.id]: http(
+      //`https://eth-sepolia.g.alchemy.com/v2/diUdE-kcjcgdKqfuxZbzOGtUvO3jOhYS`
+      "http://localhost:8545"
+    ),
+    [31337]: http(
       //`https://eth-sepolia.g.alchemy.com/v2/diUdE-kcjcgdKqfuxZbzOGtUvO3jOhYS`
       "http://localhost:8545"
     ),

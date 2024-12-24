@@ -1,8 +1,9 @@
-import { Address, parseEther } from "viem";
+import { Address, formatEther, parseEther, parseUnits } from "viem";
 import { EggsContract } from "../providers/contracts";
 import useWriteContractAndWaitForConfirm from "./useWriteContractAndWaitForConfirm";
+import useGetLeverageFee from "./useGetLeverageFee";
 
-export default function useBorrow() {
+export default function useLeverUp(sonic: bigint, days: number) {
   const {
     writeContract,
     isError,
@@ -10,20 +11,26 @@ export default function useBorrow() {
     isConfirming,
     isPending,
     isUserError,
+    error,
     reset,
   } = useWriteContractAndWaitForConfirm();
   const { abi, address } = EggsContract;
-
-  const borrow = (sonicAmount: string, days: number) => {
+  const { data: _fee } = useGetLeverageFee(sonic, days);
+  const leverUp = () => {
+    console.log(formatEther(sonic || "0"));
+    console.log(formatEther(_fee || "0"));
+    console.log(days);
     writeContract({
       abi,
       address: address as Address,
-      functionName: "borrow",
-      args: [Number(sonicAmount), days],
+      functionName: "leverUp",
+      args: [sonic, days],
+      value: _fee,
     });
   };
+
   return {
-    borrow,
+    leverUp,
     isError,
     isSuccess,
     isConfirming,

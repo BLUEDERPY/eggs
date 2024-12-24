@@ -1,5 +1,6 @@
 import { Grid, Typography } from "@mui/material";
-import Widget from "../LoopComponents/Widget";
+import { LeverageCalculator } from "../LeverageCalculator/LeverageCalculator";
+import useLoanByAddress from "../hooks/useLoanByAddress";
 
 const LoopPage = () => {
   return (
@@ -7,12 +8,12 @@ const LoopPage = () => {
       <Grid item xs={12} alignSelf={"center"}>
         <Typography align="center" variant="h5">
           {" "}
-          LOOP{" "}
+          LEVERAGE{" "}
         </Typography>
       </Grid>
 
       <Grid item xs={12}>
-        <Widget />
+        <LeverageCalculator />
       </Grid>
     </>
   );

@@ -61,9 +61,8 @@ function App() {
           >
             <Routes>
               <Route path="/" element={<HomePage />} />
-              <Route path="/borrow" element={<BorrowPage />} />
-              <Route path="/loop" element={<LoopPage />} />
-              <Route path="/unwind" element={<UnwindPage />} />
+              <Route path="/lending" element={<BorrowPage />} />
+              <Route path="/leverage" element={<LoopPage />} />
             </Routes>
           </Grid>
         </Box>

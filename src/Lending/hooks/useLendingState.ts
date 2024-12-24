@@ -72,7 +72,7 @@ export const useLendingState = () => {
     if (borrowed) return dateDiff(new Date(Number(loan[2]) * 1000), new Date());
   }, [borrowed, loan]);
 
-  const [duration, setDuration] = useState(minDuration || 0);
+  const [duration, _setDuration] = useState(minDuration || 0);
 
   const { data: fee } = useGetLoanFee(conversionRate, duration);
   const { data: additonalFee } = useGetLoanFee(
@@ -147,6 +147,13 @@ export const useLendingState = () => {
       _setBorrowAmount(max - additonalFee);
     else if (additonalFee && additonalFee > max) setBorrowAmount("0");
     else _setBorrowAmount(max);
+  };
+
+  const setDuration = (_durattion) => {
+    _setDuration(_durattion);
+    console.log(max);
+    console.log(borrowAmount);
+    if (max > borrowAmount) setBorrowAmount(maxBorrowAmount);
   };
 
   const handleBorrow = async () => {

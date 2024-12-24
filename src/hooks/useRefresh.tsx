@@ -38,7 +38,7 @@ export default function useRefresh(eggs) {
           ).toFixed(4)
         )
       : undefined;
-  //console.log(lastJsonMessage?.data);
+  console.log(lastJsonMessage?.data);
 
   return {
     data: price && Number(formatEther(price)) > 0 ? price : undefined,

@@ -13,11 +13,9 @@ const Navigation = () => {
           }}
         >
           <Box sx={{ display: "flex", gap: 0.5 }}>
-            <NavLink href="/">Home</NavLink>
-            <NavLink href="/trade">Trade</NavLink>
-            <NavLink href="/borrow">Borrow</NavLink>
-            <NavLink href="/loop">Loop</NavLink>
-            <NavLink href="/unwind">Unwind</NavLink>
+            <NavLink href="/">Trade</NavLink>
+            <NavLink href="/lending">Lending</NavLink>
+            <NavLink href="/leverage">Leverage</NavLink>
           </Box>
         </Box>
       </Container>

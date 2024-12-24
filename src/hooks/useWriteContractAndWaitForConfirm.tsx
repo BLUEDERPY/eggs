@@ -6,6 +6,7 @@ export default function useWriteContractAndWaitForConfirm() {
     data: hash,
     isPending,
     isError: isUserError,
+    error: error2,
     reset,
   } = useWriteContract();
 
@@ -17,6 +18,8 @@ export default function useWriteContractAndWaitForConfirm() {
   } = useWaitForTransactionReceipt({
     hash,
   });
+
+  console.log(error2);
   return {
     writeContract,
     hash,

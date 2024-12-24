@@ -6,6 +6,8 @@ import {
   InputAdornment,
   Typography,
   Grid,
+  Slider,
+  Box,
 } from "@mui/material";
 import { formatEther } from "viem";
 import useAccountWithBalance from "../hooks/useAccountWithBalance";
@@ -59,6 +61,16 @@ export const BorrowInputs: React.FC<BorrowInputsProps> = ({
         </Grid>
       </Grid>
       <Stack spacing={2}>
+        <Box>
+          <Typography gutterBottom>Loan Duration: {duration} days</Typography>
+
+          <Slider
+            value={duration}
+            onChange={(_, value) => setDuration(value as number)}
+            min={0}
+            max={365}
+          />
+        </Box>
         <TextField
           label="Borrow Amount"
           type="number"
@@ -74,15 +86,6 @@ export const BorrowInputs: React.FC<BorrowInputsProps> = ({
             ),
           }}
           helperText="Amount of SONIC tokens to borrow"
-        />
-
-        <TextField
-          label="Duration (days)"
-          type="number"
-          value={duration}
-          onChange={(e) => setDuration(Number(e.target.value))}
-          inputProps={{ min: minDuration, max: minDuration + 365 }}
-          helperText="Loan duration in days (1-365)"
         />
       </Stack>
     </Stack>
