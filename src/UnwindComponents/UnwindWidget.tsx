@@ -22,7 +22,7 @@ const LoanWidget = () => {
     isError,
     isUserError,
     isSuccess,
-  } = useWriteContractAndWaitForConfirm();
+  } = useWriteContractAndWaitForConfirm("borrow");
   // ////console.log(hash);
 
   const [showPosition, setShowPosition] = useState(false);

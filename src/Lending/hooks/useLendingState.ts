@@ -8,6 +8,7 @@ import useGetLoanFee from "../../hooks/useGetLoanFee";
 import { formatEther, parseEther } from "viem";
 import useRefresh2 from "../../hooks/useRefresh2";
 import useLoanByAddress from "../../hooks/useLoanByAddress";
+import { nFormatter } from "../../utils/formatters";
 
 export const useLendingState = () => {
   const { borrow, isPending, isConfirming, isSuccess, isError, isUserError } =
@@ -22,7 +23,7 @@ export const useLendingState = () => {
       refetch();
       refetchLoan();
     }
-    /*setStatus(
+    setStatus(
       isError
         ? "ERROR"
         : isUserError
@@ -45,7 +46,7 @@ export const useLendingState = () => {
         : isPending
         ? `Your transaction is pending`
         : ""
-    );*/
+    );
   }, [isError, isUserError, isSuccess, isConfirming, isPending]);
 
   function dateDiff(date1, date2) {
@@ -63,8 +64,9 @@ export const useLendingState = () => {
     borrowAmount || "0"
   );
   const conversionRate = useMemo(() => {
-    if (_conversionRate)
-      return parseEther(Number(formatEther(_conversionRate)).toFixed(4));
+    if (_conversionRate) {
+      return _conversionRate;
+    }
   }, [_conversionRate, refreshSuccess]);
   //@ts-expect-error
 
@@ -91,7 +93,7 @@ export const useLendingState = () => {
       const borrowingFee = Number(formatEther(fee)); // 10% APR
       const rate = Number(formatEther(conversionRate));
       const c = rate - amount - borrowingFee;
-      return c.toFixed(2); // 120% collateral ratio required
+      return nFormatter(c, 2); // 120% collateral ratio required
     }
   }, [borrowAmount, conversionRate, fee]);
   1;
@@ -107,9 +109,9 @@ export const useLendingState = () => {
     const borrowingFee = Number(formatEther(fee)) + _additonalFee; // 10% APR
     const protocolFee = amount * 0.99; // 0.1% protocol fee
     return {
-      borrowingFee: borrowingFee.toFixed(4),
-      protocolFee: protocolFee.toFixed(4),
-      total: Number(formatEther(conversionRate)).toFixed(4),
+      borrowingFee: borrowingFee,
+      protocolFee: protocolFee,
+      total: Number(formatEther(conversionRate)),
     };
   }, [borrowAmount, fee, conversionRate, additonalFee]);
 
@@ -141,8 +143,8 @@ export const useLendingState = () => {
   }, [borrowAmount, maxBorrowAmount, duration]);
 
   const handleMaxBorrow = async () => {
-    console.log(max);
-    console.log(additonalFee);
+    //// console.log(max);
+    //// console.log(additonalFee);
     if (additonalFee && additonalFee < max)
       _setBorrowAmount(max - additonalFee);
     else if (additonalFee && additonalFee > max) setBorrowAmount("0");
@@ -151,8 +153,8 @@ export const useLendingState = () => {
 
   const setDuration = (_durattion) => {
     _setDuration(_durattion);
-    console.log(max);
-    console.log(borrowAmount);
+    //// console.log(max);
+    //// console.log(borrowAmount);
     if (max > borrowAmount) setBorrowAmount(maxBorrowAmount);
   };
 

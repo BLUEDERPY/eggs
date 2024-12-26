@@ -8,6 +8,21 @@ const viemClient = createPublicClient({
   chain: localhost, //imported from viem/chains
   transport: http(), //imported from viem
 });
+const auroraTestnet = {
+  id: 57054,
+  name: "Sonic Blaze Testnet",
+  network: "SONIC",
+  nativeCurrency: {
+    name: "Sonic",
+    symbol: "S",
+    decimals: 18,
+  },
+  rpcUrls: {
+    //infura: 'https://aurora-testnet.infura.io/v3/YOUR_API_KEY',
+    default: "https://rpc.blaze.soniclabs.com",
+  },
+  testnet: true,
+};
 
 /*export const config = createConfig({
   chains: [mainnet, localhost],
@@ -19,22 +34,16 @@ const viemClient = createPublicClient({
 });*/
 const _config = getDefaultConfig({
   // Your dApps chains
-  chains: [sepolia, mainnet, localhost],
+  chains: [sepolia, mainnet],
   storage: createStorage({ storage: window.localStorage }),
 
   transports: {
     // RPC URL for each chain
     [mainnet.id]: http(
-      //`https://eth-mainnet.g.alchemy.com/v2/diUdE-kcjcgdKqfuxZbzOGtUvO3jOhYS`
-      "http://localhost:8545"
+      `https://eth-mainnet.g.alchemy.com/v2/3AgF019UXqiHyZ62YAXQgWSw2q-XRFGs`
     ),
     [sepolia.id]: http(
-      //`https://eth-sepolia.g.alchemy.com/v2/diUdE-kcjcgdKqfuxZbzOGtUvO3jOhYS`
-      "http://localhost:8545"
-    ),
-    [31337]: http(
-      //`https://eth-sepolia.g.alchemy.com/v2/diUdE-kcjcgdKqfuxZbzOGtUvO3jOhYS`
-      "http://localhost:8545"
+      `https://eth-sepolia.g.alchemy.com/v2/3AgF019UXqiHyZ62YAXQgWSw2q-XRFGs`
     ),
   },
 
@@ -44,4 +53,4 @@ const _config = getDefaultConfig({
   // Required App Info
   appName: "LoopDaWoop",
 });
-export const config = createConfig({ ..._config, client: () => viemClient });
+export const config = createConfig({ ..._config });

@@ -6,7 +6,7 @@ import useWebSocket, { ReadyState } from "react-use-websocket";
 import { useVisibilityChange } from "@uidotdev/usehooks";
 
 import { useTheme } from "@mui/material/styles";
-const WS_URL = "ws://localhost:8000";
+const WS_URL = "wss://vote-leaderboard-2a3dbf662016.herokuapp.com"; // "ws://localhost:8000"; //"wss://vote-leaderboard-2a3dbf662016.herokuapp.com"; //
 import { reformatData } from "./FormatData";
 
 export const ChartComponent = (props) => {
@@ -59,7 +59,6 @@ export const ChartComponent = (props) => {
       areaBottomColor = "rgba(41, 98, 255, 0.28)",
     } = {},
   } = props;
-
   useEffect(() => {
     if (series && chart && lastMessage && lastMessage.data !== "ping") {
       const rawData = JSON.parse(lastMessage.data).data;
@@ -69,12 +68,21 @@ export const ChartComponent = (props) => {
       if (rawData.length > 1) {
         const _data = reformatData(rawData, candelSize);
         series.setData(_data);
-        if (updatedata.length == 0) {
-          chart.timeScale().fitContent();
-          chart.timeScale().scrollToPosition(5);
-        }
-        setData(rawData);
-      } else if (rawData.length === 1 && updatedata.length > 0) {
+
+        chart.timeScale().fitContent();
+        chart.timeScale().scrollToPosition(5);
+
+        ready === 1 && setData(rawData);
+      }
+    }
+  }, [series, chart, lastMessage, candelSize, ready]);
+  useEffect(() => {
+    if (series && chart && lastMessage && lastMessage.data !== "ping") {
+      const rawData = JSON.parse(lastMessage.data).data;
+
+      //const val = _data[candelSize][0];
+
+      if (rawData.length === 1 && updatedata.length > 0) {
         if (
           rawData[0].high != updatedata[updatedata.length - 1].high ||
           rawData[0].time > updatedata[updatedata.length - 1].time
@@ -93,7 +101,7 @@ export const ChartComponent = (props) => {
 
       //series?.update(val);
     }
-  }, [series, chart, lastMessage, updatedata, candelSize]);
+  }, [series, chart, lastMessage, updatedata, candelSize, ready]);
 
   useEffect(() => {
     const handleResize = () => {

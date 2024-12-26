@@ -25,19 +25,20 @@ const LoadingScreen = () => {
 
   return (
     <>
-      <Stack
-        alignItems="center"
-        direction={"column"}
-        padding={5}
-        spacing={8}
-        marginX={5}
-      >
-        <Typography variant="h5"> {message} </Typography>
+      <Stack alignItems="center">
+        {message != "" && (
+          <Typography pb="120px" variant="h5">
+            {" "}
+            {message}{" "}
+          </Typography>
+        )}
         {!isErrorOrSuccess && <HashLoader color="#1876d1" size={80} />}
-        <Button fullWidth size="large" variant="contained" onClick={click}>
-          {" "}
-          Reset Transaction{" "}
-        </Button>
+        {status == "ERROR" && (
+          <Button fullWidth variant="contained" onClick={click}>
+            {" "}
+            Reset Transaction{" "}
+          </Button>
+        )}
       </Stack>
     </>
   );

@@ -11,6 +11,8 @@ import {
 } from "@mui/material";
 import { formatEther } from "viem";
 import useAccountWithBalance from "../hooks/useAccountWithBalance";
+import { nFormatter } from "../utils/formatters";
+import theme from "../themes";
 
 interface BorrowInputsProps {
   borrowAmount: string;
@@ -33,33 +35,41 @@ export const BorrowInputs: React.FC<BorrowInputsProps> = ({
 }) => {
   const { data: sonic } = useAccountWithBalance();
   return (
-    <Stack spacing={0}>
-      <Grid
-        container
-        direction="row"
-        justifyContent="space-between"
-        width={"100%"}
-        mb={2}
+    <Stack spacing={0} pt={"36px"} position={"relative"}>
+      <Box
+        width={"120px"}
+        p={1}
+        position={"absolute"}
+        right={0}
+        top={0}
+        border={"1px solid"}
+        borderColor={theme.palette.primary.dark}
       >
-        <Grid item>
-          <Typography
-            sx={{ textAlign: "left" }}
-            variant="body2"
-            color="text.secondary"
-          >
-            {Number(sonic?.formatted || "0").toFixed(2)} SONIC
-          </Typography>
-        </Grid>
-        <Grid item>
-          <Typography
-            sx={{ textAlign: "right" }}
-            variant="body2"
-            color="text.secondary"
-          >
-            {Number(formatEther(balance || 0)).toFixed(2)} EGGS
-          </Typography>
-        </Grid>
-      </Grid>
+        <Typography
+          sx={{ textAlign: "center" }}
+          variant="body2"
+          color="text.secondary"
+        >
+          Balances
+        </Typography>
+
+        <Typography variant="body2" color="text.secondary">
+          <Grid container direction="row" justifyContent="space-between">
+            <Grid item>EGGS:</Grid>{" "}
+            <Grid item textAlign={"right"}>
+              {nFormatter(Number(formatEther(balance) || "0"), 2)}
+            </Grid>
+          </Grid>
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          <Grid container direction="row" justifyContent="space-between">
+            <Grid item>SONIC:</Grid>{" "}
+            <Grid item textAlign={"right"}>
+              {nFormatter(Number(sonic?.formatted || "0"), 2)}{" "}
+            </Grid>
+          </Grid>
+        </Typography>
+      </Box>
       <Stack spacing={2}>
         <Box>
           <Typography gutterBottom>Loan Duration: {duration} days</Typography>

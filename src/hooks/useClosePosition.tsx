@@ -6,7 +6,7 @@ import useLoanByAddress from "./useLoanByAddress";
 
 export default function useClosePosition() {
   const { writeContract, isError, isSuccess, isConfirming, isPending, reset } =
-    useWriteContractAndWaitForConfirm();
+    useWriteContractAndWaitForConfirm("closePosition");
   const { abi, address } = EggsContract;
 
   const { data } = useLoanByAddress();

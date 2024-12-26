@@ -3,6 +3,7 @@ import { Box, Stack, Typography, Slider, LinearProgress } from "@mui/material";
 import { nFormatter } from "../utils/formatters";
 import { TrendingUp } from "lucide-react";
 import chroma from "chroma-js";
+import { parseEther } from "viem";
 
 interface PotentialReturnsProps {
   scenarios: Array<{
@@ -10,9 +11,9 @@ interface PotentialReturnsProps {
     profit: number;
     roi: number;
   }>;
-  borrowAmount: Number;
-  leverageX: Number;
-  fee: Number;
+  borrowAmount: number;
+  leverageX: number;
+  fee: number;
 }
 
 export const PotentialReturns = ({
@@ -33,9 +34,9 @@ export const PotentialReturns = ({
   const customScenario =
     scenarios.find((s) => Number(s.label.replace("%", "")) >= priceIncrease) ||
     scenarios[2];
-
-  const scaledProfit = borrowAmount * (priceIncrease / 100) - fee;
-  const scaledROI = (borrowAmount * (priceIncrease / 100)) / fee;
+  const _borrowAmount = borrowAmount * 0.99 - fee;
+  const scaledProfit = _borrowAmount * (priceIncrease / 100) - fee;
+  const scaledROI = (scaledProfit * 100) / fee;
   return (
     <Box sx={{ p: 3, pt: 6, minWidth: "100%" }}>
       <Stack spacing={4}>
@@ -83,7 +84,7 @@ export const PotentialReturns = ({
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
             ROI: {scaledROI > 0 ? "+" : ""}
-            {scaledROI.toFixed(1)}%
+            {scaledROI ? scaledROI.toFixed(1) : "-- "}%
           </Typography>
         </Box>
 

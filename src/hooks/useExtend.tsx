@@ -12,7 +12,7 @@ export default function useExtend() {
     isUserError,
     error,
     reset,
-  } = useWriteContractAndWaitForConfirm();
+  } = useWriteContractAndWaitForConfirm("extendLoan");
   const { abi, address } = EggsContract;
 
   const extendLoan = (days: number, fee: string) => {

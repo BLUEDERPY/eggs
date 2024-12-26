@@ -6,11 +6,12 @@ import useGetLoanFee from "../../hooks/useGetLoanFee";
 import { formatEther } from "viem";
 import useExtend from "../../hooks/useExtend";
 import useAccountWithBalance from "../../hooks/useAccountWithBalance";
+import LoadingScreen from "../../UnwindComponents/LoadingScreen";
 
 export const ExtendLoanTab = () => {
   const { data: loanData, refetch: refetchLoan } = useLoanByAddress();
   const [extensionDays, setExtensionDays] = useState(1);
-  const { extendLoan, isSuccess } = useExtend();
+  const { extendLoan, isSuccess, isConfirming, isPending } = useExtend();
   const { data: balance, refetch } = useAccountWithBalance();
 
   const currentExpiry = loanData
@@ -30,70 +31,87 @@ export const ExtendLoanTab = () => {
   }, [isSuccess]);
 
   return (
-    <Stack spacing={3}>
+    <Stack
+      spacing={3}
+      minHeight={"424px"}
+      justifyContent={"center"}
+      position={"relative"}
+    >
       <Typography
         sx={{ textAlign: "right" }}
         variant="body2"
         color="text.secondary"
+        position={"absolute"}
+        right={0}
+        top={0}
       >
         Balance: {Number(balance?.formatted).toFixed(4)} SONIC
       </Typography>
-      <Grid
-        container
-        sx={{
-          textAlign: "center",
-          width: "100%",
-          justifyContent: "space-between",
-        }}
-      >
-        <Grid item>
-          <Stack spacing={2}>
-            <Typography variant="subtitle2">New Expiration Date</Typography>
-            <Typography variant="h6">{formatDate(newExpiry)}</Typography>
+
+      {isConfirming || isPending ? (
+        <LoadingScreen />
+      ) : (
+        <>
+          <Grid
+            container
+            sx={{
+              textAlign: "center",
+              width: "100%",
+              justifyContent: "space-between",
+            }}
+          >
+            <Grid item>
+              <Stack spacing={2}>
+                <Typography variant="subtitle2">New Expiration Date</Typography>
+                <Typography variant="h6">{formatDate(newExpiry)}</Typography>
+              </Stack>
+            </Grid>
+            <Grid item>
+              <Stack spacing={2}>
+                <Typography variant="subtitle2">Extension Period</Typography>
+                <Typography variant="h6"> {extensionDays} days</Typography>
+              </Stack>
+            </Grid>
+          </Grid>
+
+          <Stack spacing={2} pb="24px">
+            <Grid
+              container
+              spacing={2}
+              sx={{ alignItems: "center", width: "100%" }}
+            >
+              <Grid item>
+                <Typography variant="subtitle2">1 day</Typography>
+              </Grid>
+              <Grid item xs>
+                <Slider
+                  value={extensionDays}
+                  onChange={(_, value) => setExtensionDays(value as number)}
+                  min={1}
+                  max={365}
+                />
+              </Grid>
+              <Grid item>
+                {" "}
+                <Typography variant="subtitle2">365 days</Typography>
+              </Grid>
+            </Grid>
           </Stack>
-        </Grid>
-        <Grid item>
-          <Stack spacing={2}>
-            <Typography variant="subtitle2">Extension Period</Typography>
-            <Typography variant="h6"> {extensionDays} days</Typography>
-          </Stack>
-        </Grid>
-      </Grid>
 
-      <Stack spacing={2} pb="24px">
-        <Grid
-          container
-          spacing={2}
-          sx={{ alignItems: "center", width: "100%" }}
-        >
-          <Grid item>
-            <Typography variant="subtitle2">1 day</Typography>
-          </Grid>
-          <Grid item xs>
-            <Slider
-              value={extensionDays}
-              onChange={(_, value) => setExtensionDays(value as number)}
-              min={1}
-              max={365}
-            />
-          </Grid>
-          <Grid item>
-            {" "}
-            <Typography variant="subtitle2">365 days</Typography>
-          </Grid>
-        </Grid>
-      </Stack>
+          <Alert severity="info">
+            Extension fee: {feeAmount.toFixed(4)} SONIC
+          </Alert>
 
-      <Alert severity="info">Extension fee: {feeAmount.toFixed(4)} SONIC</Alert>
-
-      <Button
-        variant="contained"
-        onClick={() => extendLoan(extensionDays, formatEther(fee))}
-        disabled={extensionDays <= 0 || balance?.value < fee}
-        fullWidth
-      >
-        Extend Loan
-      </Button>
+          <Button
+            variant="contained"
+            onClick={() => extendLoan(extensionDays, formatEther(fee))}
+            disabled={extensionDays <= 0 || balance?.value < fee}
+            fullWidth
+          >
+            Extend Loan
+          </Button>
+        </>
+      )}
     </Stack>
   );
 };

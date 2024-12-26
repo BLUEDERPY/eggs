@@ -1,8 +1,9 @@
 import { Address, parseEther } from "viem";
 import { EggsContract } from "../providers/contracts";
 import useWriteContractAndWaitForConfirm from "./useWriteContractAndWaitForConfirm";
+import useAccountWithBalance from "./useAccountWithBalance";
 
-export default function useBorrow() {
+export default function useBuy() {
   const {
     writeContract,
     isError,
@@ -13,17 +14,19 @@ export default function useBorrow() {
     reset,
   } = useWriteContractAndWaitForConfirm("borrow");
   const { abi, address } = EggsContract;
+  const { address: userAddress } = useAccountWithBalance();
 
-  const borrow = (sonicAmount: string, days: number) => {
+  const buy = (sonicAmount: string) => {
     writeContract({
       abi,
       address: address as Address,
-      functionName: "borrow",
-      args: [Number(sonicAmount), days],
+      functionName: "buy",
+      args: [userAddress],
+      value: parseEther(sonicAmount),
     });
   };
   return {
-    borrow,
+    buy,
     isError,
     isSuccess,
     isConfirming,

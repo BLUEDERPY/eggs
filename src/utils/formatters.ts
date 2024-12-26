@@ -27,5 +27,19 @@ export const nFormatter = (num: number, digits: number) => {
   const item = lookup.findLast((item) => num >= item.value);
   return item
     ? (num / item.value).toFixed(digits).replace(regexp, "").concat(item.symbol)
-    : "0";
+    : num > 0.01 && digits >= 2
+    ? num.toFixed(digits)
+    : num > 0.001
+    ? num.toFixed(4)
+    : num > 0.0001
+    ? num.toFixed(5)
+    : num > 0.00001
+    ? num.toFixed(6)
+    : num > 0.000001
+    ? num.toFixed(7)
+    : num > 0.0000001
+    ? num.toFixed(8)
+    : num > 0.00000001
+    ? num.toFixed(9)
+    : num.toString();
 };

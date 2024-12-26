@@ -67,41 +67,46 @@ export const LendingInterface: React.FC = () => {
           md: hasPosition ? "800px" : "450px",
         },
         borderRadius: { sm: "16px" },
+        minHeight: "500px",
         position: "relative",
       }}
     >
-      {isTransactionOccuring ? (
-        <LoadingScreen />
-      ) : !hasPosition ? (
-        <Stack
-          sx={{
-            py: { xs: "24px", sm: 4, md: 6 },
-            px: { xs: "24px", sm: 6, md: 8 },
-          }}
-          spacing={3}
-        >
-          <BorrowInputs
-            borrowAmount={borrowAmount}
-            setBorrowAmount={setBorrowAmount}
-            duration={duration}
-            setDuration={setDuration}
-            onMaxClick={handleMaxBorrow}
-            balance={balance}
-          />
-          <Box>
-            <CollateralDisplay
-              collateralRequired={collateralRequired || 0}
-              borrowAmount={borrowAmount}
-            />
-
-            <FeesDisplay fees={fees} duration={duration} />
+      {!hasPosition ? (
+        isTransactionOccuring ? (
+          <Box p="20px">
+            <LoadingScreen />
           </Box>
-          <BorrowActions
-            isValid={isValid}
-            errorMessage={errorMessage}
-            onBorrow={handleBorrow}
-          />
-        </Stack>
+        ) : (
+          <Stack
+            sx={{
+              py: { xs: "24px", sm: 4, md: 6 },
+              px: { xs: "24px", sm: 6, md: 8 },
+            }}
+            spacing={3}
+          >
+            <BorrowInputs
+              borrowAmount={borrowAmount}
+              setBorrowAmount={setBorrowAmount}
+              duration={duration}
+              setDuration={setDuration}
+              onMaxClick={handleMaxBorrow}
+              balance={balance}
+            />
+            <Box>
+              <CollateralDisplay
+                collateralRequired={collateralRequired || 0}
+                borrowAmount={borrowAmount}
+              />
+
+              <FeesDisplay fees={fees} duration={duration} />
+            </Box>
+            <BorrowActions
+              isValid={isValid}
+              errorMessage={errorMessage}
+              onBorrow={handleBorrow}
+            />
+          </Stack>
+        )
       ) : (
         <Box
           sx={{

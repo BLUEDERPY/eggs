@@ -15,8 +15,9 @@ import useWebSocket, { ReadyState } from "react-use-websocket";
 import { useVisibilityChange } from "@uidotdev/usehooks";
 import chroma from "chroma-js";
 import useRefresh from "../../hooks/useRefresh";
+import useSonicToEggs from "../../hooks/useSonicToEggs";
 
-const WS_URL = "ws://localhost:8000";
+const WS_URL = "wss://vote-leaderboard-2a3dbf662016.herokuapp.com"; // "ws://localhost:8000";
 
 export const LoanMetrics: React.FC = () => {
   const theme = useTheme();
@@ -24,26 +25,32 @@ export const LoanMetrics: React.FC = () => {
   const { data: loanData } = useLoanByAddress();
 
   const { data: _conversionRate, isSuccess } = useRefresh(
-    (loanData && loanData[0]) || parseEther("0")
+    loanData ? loanData[0] : parseEther("0")
+  );
+  const { data: _conversionRate2 } = useEggsToSonic(
+    loanData ? loanData[0] : parseEther("0")
   );
 
   const [conversionRate, setConversionRate] = useState(undefined);
 
   useEffect(() => {
+    console.log(_conversionRate);
+    if (!conversionRate) {
+      setConversionRate(_conversionRate2);
+    }
     if (_conversionRate) {
-      //console.log(_conversionRate);
       setConversionRate(_conversionRate);
     }
-  }, [_conversionRate]);
+  }, [_conversionRate, _conversionRate2, conversionRate]);
 
-  // ////console.log(conversionRate);
+  console.log(_conversionRate2);
 
   // Calculate values
   const collateralEggs = loanData ? Number(formatEther(loanData[0])) : 0;
   const borrowedSonic = loanData ? Number(formatEther(loanData[1])) : 0;
   const borrowedSonicRaw = loanData ? loanData[1] : 0;
-  console.log(conversionRate);
-  console.log(borrowedSonicRaw);
+  //// console.log(conversionRate);
+  //// console.log(borrowedSonicRaw);
   //console.log(isSuccess);
   const positionValue =
     conversionRate && borrowedSonicRaw
@@ -104,7 +111,10 @@ export const LoanMetrics: React.FC = () => {
           Position Value
         </Typography>
         <Typography variant="h4" sx={{ mb: 2 }}>
-          {nFormatter(positionValue, 2)} SONIC
+          {positionValue < 1
+            ? positionValue.toFixed(4)
+            : nFormatter(positionValue, 4)}{" "}
+          SONIC
         </Typography>
       </Box>
 

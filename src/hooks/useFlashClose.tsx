@@ -6,7 +6,7 @@ import useLoanByAddress from "./useLoanByAddress";
 
 export default function useFlashClose() {
   const { writeContract, isError, isSuccess, isConfirming, isPending, reset } =
-    useWriteContractAndWaitForConfirm();
+    useWriteContractAndWaitForConfirm("flashClosePosition");
   const { abi, address } = EggsContract;
 
   //@ts-expect-error

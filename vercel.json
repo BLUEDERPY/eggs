@@ -1,8 +1,7 @@
 {
   "routes": [
     { "src": "/", "dest": "/" },
-    { "src": "/loop", "dest": "/" },
-    { "src": "/unwind", "dest": "/" },
-    { "src": "/borrow", "dest": "/" }
+    { "src": "/leverage", "dest": "/" },
+    { "src": "/lending", "dest": "/" }
   ]
 }

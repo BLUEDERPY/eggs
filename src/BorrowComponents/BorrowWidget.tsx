@@ -21,7 +21,7 @@ const BorrowWidget = () => {
     isConfirming,
     isSuccess,
     isPending,
-  } = useWriteContractAndWaitForConfirm();
+  } = useWriteContractAndWaitForConfirm("borrow");
   const [isTransactionOccuring, setIsTransactionOccuring] = useState(false);
 
   useEffect(() => {

@@ -16,6 +16,8 @@ import useRefresh from "../../hooks/useRefresh";
 import useRefresh2 from "../../hooks/useRefresh2";
 import useClosePosition from "../../hooks/useClosePosition";
 import useFlashClose from "../../hooks/useFlashClose";
+import LoadingScreen from "../../UnwindComponents/LoadingScreen";
+import { nFormatter } from "../../utils/formatters";
 
 type CloseMethod = "standard" | "flash";
 
@@ -23,8 +25,14 @@ export const ClosePositionTab = () => {
   const [closeMethod, setCloseMethod] = useState<CloseMethod>("standard");
   const { data: loanData, refetch } = useLoanByAddress();
   const { data: balance, refetch: refetchBal } = useAccountWithBalance();
-  const { closePosition, isSuccess } = useClosePosition();
-  const { flashClosePosition, isSuccess: isSuccessFlash } = useFlashClose();
+  const { closePosition, isSuccess, isConfirming, isPending } =
+    useClosePosition();
+  const {
+    flashClosePosition,
+    isSuccess: isSuccessFlash,
+    isConfirming: isConfirmingFlash,
+    isPending: isPendingFlash,
+  } = useFlashClose();
 
   const borrowed = loanData ? Number(formatEther(loanData[1])) : 0;
   const collateral = loanData ? Number(formatEther(loanData[0])) : 0;
@@ -48,76 +56,98 @@ export const ClosePositionTab = () => {
   }, [isSuccess, isSuccessFlash]);
 
   return (
-    <Stack spacing={3}>
+    <Stack
+      spacing={3}
+      minHeight={"424px"}
+      justifyContent={"center"}
+      position={"relative"}
+    >
       <Typography
         sx={{ textAlign: "right" }}
         variant="body2"
         color="text.secondary"
+        position={"absolute"}
+        right={0}
+        top={0}
       >
         Balance: {Number(balance?.formatted).toFixed(4)} SONIC
       </Typography>
-      <ToggleButtonGroup
-        value={closeMethod}
-        exclusive
-        onChange={(_, value) => value && setCloseMethod(value)}
-        fullWidth
-      >
-        <ToggleButton value="standard">Standard Repay</ToggleButton>
-        <ToggleButton value="flash">Flash Close</ToggleButton>
-      </ToggleButtonGroup>
-
-      {closeMethod === "standard" ? (
-        <>
-          <Stack spacing={2}>
-            <Typography variant="subtitle2">Required SONIC to Repay</Typography>
-            <Typography variant="h6">{borrowed.toFixed(2)} SONIC</Typography>
-          </Stack>
-
-          <Alert severity="info">
-            After repayment, you will receive {collateral.toFixed(2)} EGGS
-          </Alert>
-
-          <Button
-            disabled={borrowed > balance?.formatted}
-            variant="contained"
-            onClick={handleClose}
-            color="primary"
-            fullWidth
-          >
-            Repay & Close Position
-          </Button>
-        </>
+      {isConfirming || isPending || isConfirmingFlash || isPendingFlash ? (
+        <LoadingScreen />
       ) : (
         <>
-          {maxRemovable < 0 ? (
-            <Alert severity="info">
-              Your collateral value must be 1% higher than your borrowed amount
-              to use this function.
-            </Alert>
-          ) : (
-            <Alert severity="warning">
-              Flash close will swap your collateral for SONIC to repay the loan
-              in a single transaction. Using this function result in 1% fee.
-            </Alert>
-          )}
-
-          <Stack spacing={2}>
-            <Typography variant="subtitle2">Estimated Return</Typography>
-            <Typography variant="h6">{maxRemovable.toFixed(2)} EGGS</Typography>
-            <Typography variant="caption" color="text.secondary">
-              After 1% flash close fee
-            </Typography>
-          </Stack>
-
-          <Button
-            disabled={maxRemovable < 0}
-            variant="contained"
-            onClick={handleFlashClose}
-            color="error"
+          <ToggleButtonGroup
+            value={closeMethod}
+            exclusive
+            onChange={(_, value) => value && setCloseMethod(value)}
             fullWidth
           >
-            Flash Close Position
-          </Button>
+            <ToggleButton value="standard">Standard Repay</ToggleButton>
+            <ToggleButton value="flash">Flash Close</ToggleButton>
+          </ToggleButtonGroup>
+
+          {closeMethod === "standard" ? (
+            <>
+              <Stack spacing={2}>
+                <Typography variant="subtitle2">
+                  Required SONIC to Repay
+                </Typography>
+                <Typography variant="h6">
+                  {nFormatter(borrowed, 2)} SONIC
+                </Typography>
+              </Stack>
+
+              <Alert severity="info">
+                After repayment, you will receive {nFormatter(collateral, 2)}{" "}
+                EGGS
+              </Alert>
+
+              <Button
+                disabled={Number(borrowed) > Number(balance?.formatted)}
+                variant="contained"
+                onClick={handleClose}
+                color="primary"
+                fullWidth
+              >
+                Repay & Close Position
+              </Button>
+            </>
+          ) : (
+            <>
+              {maxRemovable < 0 ? (
+                <Alert severity="info">
+                  Your collateral value must be 1% higher than your borrowed
+                  amount to use this function.
+                </Alert>
+              ) : (
+                <Alert severity="warning">
+                  Flash close will swap your collateral for SONIC to repay the
+                  loan in a single transaction. Using this function result in 1%
+                  fee.
+                </Alert>
+              )}
+
+              <Stack spacing={2}>
+                <Typography variant="subtitle2">Estimated Return</Typography>
+                <Typography variant="h6">
+                  {nFormatter(maxRemovable, 2)} EGGS
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  After 1% flash close fee
+                </Typography>
+              </Stack>
+
+              <Button
+                disabled={maxRemovable < 0}
+                variant="contained"
+                onClick={handleFlashClose}
+                color="error"
+                fullWidth
+              >
+                Flash Close Position
+              </Button>
+            </>
+          )}
         </>
       )}
     </Stack>

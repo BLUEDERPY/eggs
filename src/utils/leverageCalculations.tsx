@@ -13,7 +13,7 @@ export function getInterestFeeInEggs(
   numberOfDays: number
 ): bigint {
   const interest =
-    (BigInt(2490) * BigInt(numberOfDays)) / BigInt(365) + BigInt(50);
+    (BigInt(3900) * BigInt(numberOfDays)) / BigInt(365) + BigInt(100);
   return (amount * interest) / BigInt(100) / BigInt(FEE_BASE_1000);
 }
 
@@ -34,7 +34,10 @@ export function getMaxEggsFromFee(
   // leverageAmount = mintFee + interest
   // leverageAmount = (eggs * BUY_FEE_REVERSE / FEE_BASE_1000) + (eggs * interest / 100 / FEE_BASE_1000)
 
-  const interest = parseUnits(((2490 * numberOfDays) / 365 + 50).toString(), 1);
+  const interest = parseUnits(
+    ((3900 * numberOfDays) / 365 + 100).toString(),
+    1
+  );
 
   // Combine terms:
   // leverageAmount = eggs * (BUY_FEE_REVERSE + interest) / (100 * FEE_BASE_1000)
@@ -43,7 +46,9 @@ export function getMaxEggsFromFee(
   const denominator =
     BigInt(BUY_FEE_REVERSE) * BigInt(FEE_BASE_1000) + interest;
   return (
-    (leverageAmount * BigInt(FEE_BASE_1000) * BigInt(FEE_BASE_1000)) /
+    ((leverageAmount - parseEther("0.1")) *
+      BigInt(FEE_BASE_1000) *
+      BigInt(FEE_BASE_1000)) /
     denominator
   );
 }

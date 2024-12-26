@@ -5,7 +5,7 @@ import useGetLoanFee from "./useGetLoanFee";
 
 export default function useExtendLoan() {
   const { writeContract, isError, isSuccess, isConfirming, isPending, reset } =
-    useWriteContractAndWaitForConfirm();
+    useWriteContractAndWaitForConfirm("extendLoan");
   const { abi, address } = EggsContract;
   const extendLoan = (days: number) => {
     const { data } = useGetLoanFee(days);

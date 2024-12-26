@@ -13,13 +13,13 @@ export default function useLeverUp(sonic: bigint, days: number) {
     isUserError,
     error,
     reset,
-  } = useWriteContractAndWaitForConfirm();
+  } = useWriteContractAndWaitForConfirm("leverUp");
   const { abi, address } = EggsContract;
   const { data: _fee } = useGetLeverageFee(sonic, days);
   const leverUp = () => {
-    console.log(formatEther(sonic || "0"));
-    console.log(formatEther(_fee || "0"));
-    console.log(days);
+   //// console.log(formatEther(sonic || "0"));
+   //// console.log(formatEther(_fee || "0"));
+   //// console.log(days);
     writeContract({
       abi,
       address: address as Address,

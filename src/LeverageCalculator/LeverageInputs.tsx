@@ -141,10 +141,6 @@ export const LeverageInputs = ({
         sx={{
           py: 1,
           height: "auto",
-          "&:hover": {
-            bgcolor: "secondary.main",
-            color: "background.paper",
-          },
         }}
       >
         Open Leverage Position

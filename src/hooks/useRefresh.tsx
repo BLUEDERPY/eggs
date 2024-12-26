@@ -4,7 +4,7 @@ import useWebSocket from "react-use-websocket";
 import { Address, formatEther, parseEther } from "viem";
 import { useAccount, useReadContract } from "wagmi";
 import { EggsContract } from "../providers/contracts";
-const WS_URL = "ws://localhost:8000";
+const WS_URL = "wss://vote-leaderboard-2a3dbf662016.herokuapp.com"; //"ws://localhost:8000"; //"wss://vote-leaderboard-2a3dbf662016.herokuapp.com"; //
 
 export default function useRefresh(eggs) {
   const documentVisible = useVisibilityChange();
@@ -38,7 +38,7 @@ export default function useRefresh(eggs) {
           ).toFixed(4)
         )
       : undefined;
-  console.log(lastJsonMessage?.data);
+  // console.log(lastJsonMessage?.data);
 
   return {
     data: price && Number(formatEther(price)) > 0 ? price : undefined,

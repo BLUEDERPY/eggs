@@ -9,6 +9,7 @@ import {
   DialogContent,
   DialogTitle,
   Typography,
+  Stack,
 } from "@mui/material";
 import useEggsToSonic from "../hooks/useEggsToSonic";
 import useGetLoanFee from "../hooks/useGetLoanFee";
@@ -27,6 +28,7 @@ import { LoanMetrics } from "../Lending/Sidebar/LoanMetrics";
 import { LendingTabs } from "../Lending/LendingTabs";
 import theme from "../themes";
 import useLeverUp from "../hooks/useLeverUp";
+import LoadingScreen from "../UnwindComponents/LoadingScreen";
 
 export const LeverageCalculator = () => {
   const { data: loan, refetch } = useLoanByAddress();
@@ -34,7 +36,7 @@ export const LeverageCalculator = () => {
   const [sonicAmount, setSonicAmount] = useState("0");
   const [duration, setDuration] = useState<number>(1);
   const { data: balance, refetch: refetchBal } = useAccountWithBalance();
-  const sonicBalance = balance ? Number(balance.formatted).toFixed(6) : "0";
+  const sonicBalance = balance ? balance.formatted : "0";
 
   const { data: conversionRate } = useEggsToSonic("1");
   const eggsPerSonic = conversionRate ? Number(formatEther(conversionRate)) : 0;
@@ -45,12 +47,15 @@ export const LeverageCalculator = () => {
 
   const fee = getLeverageAmount(parseEther(sonicAmount || "0"), duration);
   const max = getMaxEggsFromFee(balance?.value || BigInt(0), duration);
-  console.log(fee);
+  //// console.log(fee);
   const loanFee = fee ? Number(formatEther(fee)) : 0;
 
   const leverageX = Number(sonicAmount) / loanFee;
 
-  const { leverUp, isSuccess } = useLeverUp(parseEther(sonicAmount), duration);
+  const { leverUp, isSuccess, isPending, isConfirming } = useLeverUp(
+    parseEther(sonicAmount),
+    duration
+  );
 
   const handleLeveragePosition = async () => {
     leverUp();
@@ -65,11 +70,11 @@ export const LeverageCalculator = () => {
 
   useEffect(() => {
     if (fee > balance?.value)
-      setSonicAmount(Number(formatEther(max || "0")).toFixed(6));
+      setSonicAmount(Number(formatEther(max || "0")).toString());
   }, [duration, max, fee, balance]);
 
   const handleMaxClick = () => {
-    setSonicAmount(Number(formatEther(max || "0")).toFixed(6));
+    setSonicAmount(Number(formatEther(max || "0")).toString());
   };
 
   const calculateROI = (priceIncrease: number) => {
@@ -104,14 +109,19 @@ export const LeverageCalculator = () => {
     <Card
       sx={{
         p: 0,
+        mb: "24px",
         width: { xs: "calc(100dvw - 30px)", sm: "450px", md: "900px" },
         borderRadius: { sm: "16px" },
         position: "relative",
       }}
     >
-      {loan &&
-      loan[1] > 0 &&
-      new Date(formatEther(loan[2]) * 1000) <= new Date() ? (
+      {isPending || isConfirming ? (
+        <Stack spacing={3} minHeight={"566px"} justifyContent={"center"}>
+          <LoadingScreen />
+        </Stack>
+      ) : loan &&
+        loan[1] > 0 &&
+        new Date(formatEther(loan[2]) * 1000) <= new Date() ? (
         <Box
           sx={{
             display: "grid",

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Box, Typography, Tooltip } from "@mui/material";
 import { Info } from "lucide-react";
+import { nFormatter } from "../utils/formatters";
 
 interface FeesDisplayProps {
   fees: {
@@ -21,7 +22,7 @@ export const FeesDisplay: React.FC<FeesDisplayProps> = ({ fees, duration }) => {
       if (fees.borrowingFee && fees.borrowingFee > 0)
         setBorrowFee(fees.borrowingFee);
       if (fees.protocolFee && fees.protocolFee > 0)
-        setProtocolFee(Number(fees.protocolFee).toFixed(2));
+        setProtocolFee(fees.protocolFee);
       if (fees.total && fees.total > 0) setTotal(fees.total);
     }
   }, [fees]);
@@ -31,7 +32,9 @@ export const FeesDisplay: React.FC<FeesDisplayProps> = ({ fees, duration }) => {
         <Typography variant="body2" color="text.secondary">
           Borrowing Fee ({duration} days)
         </Typography>
-        <Typography variant="body2">{borrowingFee} EGGS</Typography>
+        <Typography variant="body2">
+          {nFormatter(Number(borrowingFee), 2)} EGGS
+        </Typography>
       </Box>
 
       <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
@@ -43,7 +46,9 @@ export const FeesDisplay: React.FC<FeesDisplayProps> = ({ fees, duration }) => {
             <Info size={16} />
           </Tooltip>
         </Box>
-        <Typography variant="body2">{protocolFee} EGGS</Typography>
+        <Typography variant="body2">
+          {nFormatter(Number(protocolFee), 2)} EGGS
+        </Typography>
       </Box>
 
       <Box
@@ -57,7 +62,9 @@ export const FeesDisplay: React.FC<FeesDisplayProps> = ({ fees, duration }) => {
         }}
       >
         <Typography variant="subtitle2">Total</Typography>
-        <Typography variant="subtitle2">{total} EGGS</Typography>
+        <Typography variant="subtitle2">
+          {nFormatter(Number(total), 2)} EGGS
+        </Typography>
       </Box>
     </>
   );
