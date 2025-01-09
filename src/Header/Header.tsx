@@ -5,8 +5,9 @@ import {
   Typography,
   Button,
   styled,
+  Icon,
 } from "@mui/material";
-import { Egg } from "lucide-react";
+import Logo from "../assets/logo.png";
 import { ConnectWallet } from "./ConnectWallet";
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
@@ -26,7 +27,7 @@ export function Header() {
           }}
         >
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <Egg color="#fc9c04" size={32} />
+            <Box component={"img"} src={Logo} height={50} width={50} />
             <Typography
               variant="h6"
               sx={{ ml: 1, fontWeight: "bold", color: "white" }}

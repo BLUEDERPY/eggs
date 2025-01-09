@@ -79,7 +79,7 @@ export const LendingInterface: React.FC = () => {
         ) : (
           <Stack
             sx={{
-              py: { xs: "24px", sm: 4, md: 6 },
+              py: { xs: "24px", sm: 3 },
               px: { xs: "24px", sm: 6, md: 8 },
             }}
             spacing={3}
@@ -110,6 +110,7 @@ export const LendingInterface: React.FC = () => {
       ) : (
         <Box
           sx={{
+            // maxWidth: "100px",
             display: "grid",
             gridTemplateColumns: { xs: "1fr", md: "1fr 320px" },
             gap: 0,

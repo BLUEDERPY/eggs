@@ -18,6 +18,8 @@ import useClosePosition from "../../hooks/useClosePosition";
 import useFlashClose from "../../hooks/useFlashClose";
 import LoadingScreen from "../../UnwindComponents/LoadingScreen";
 import { nFormatter } from "../../utils/formatters";
+import { BalancesWidget } from "../BalancesWidget";
+import useEggsBalance from "../../hooks/useEggsBalance";
 
 type CloseMethod = "standard" | "flash";
 
@@ -25,6 +27,7 @@ export const ClosePositionTab = () => {
   const [closeMethod, setCloseMethod] = useState<CloseMethod>("standard");
   const { data: loanData, refetch } = useLoanByAddress();
   const { data: balance, refetch: refetchBal } = useAccountWithBalance();
+  const { data: eggs } = useEggsBalance();
   const { closePosition, isSuccess, isConfirming, isPending } =
     useClosePosition();
   const {
@@ -58,20 +61,12 @@ export const ClosePositionTab = () => {
   return (
     <Stack
       spacing={3}
-      minHeight={"424px"}
+      minHeight={"458px"}
       justifyContent={"center"}
       position={"relative"}
+      pt={"50px"}
     >
-      <Typography
-        sx={{ textAlign: "right" }}
-        variant="body2"
-        color="text.secondary"
-        position={"absolute"}
-        right={0}
-        top={0}
-      >
-        Balance: {Number(balance?.formatted).toFixed(4)} SONIC
-      </Typography>
+      <BalancesWidget sonic={balance} eggs={eggs} />
       {isConfirming || isPending || isConfirmingFlash || isPendingFlash ? (
         <LoadingScreen />
       ) : (
@@ -113,7 +108,7 @@ export const ClosePositionTab = () => {
               </Button>
             </>
           ) : (
-            <>
+            <Box mt={"50px"}>
               {maxRemovable < 0 ? (
                 <Alert severity="info">
                   Your collateral value must be 1% higher than your borrowed
@@ -127,7 +122,7 @@ export const ClosePositionTab = () => {
                 </Alert>
               )}
 
-              <Stack spacing={2}>
+              <Stack spacing={0} my={2}>
                 <Typography variant="subtitle2">Estimated Return</Typography>
                 <Typography variant="h6">
                   {nFormatter(maxRemovable, 2)} EGGS
@@ -146,7 +141,7 @@ export const ClosePositionTab = () => {
               >
                 Flash Close Position
               </Button>
-            </>
+            </Box>
           )}
         </>
       )}

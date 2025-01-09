@@ -17,7 +17,7 @@ import chroma from "chroma-js";
 import useRefresh from "../../hooks/useRefresh";
 import useSonicToEggs from "../../hooks/useSonicToEggs";
 
-const WS_URL = "wss://vote-leaderboard-2a3dbf662016.herokuapp.com"; // "ws://localhost:8000";
+const WS_URL = "wss://eggs-64815067aa3c.herokuapp.com/"; // "ws://localhost:8000";
 
 export const LoanMetrics: React.FC = () => {
   const theme = useTheme();
@@ -27,9 +27,10 @@ export const LoanMetrics: React.FC = () => {
   const { data: _conversionRate, isSuccess } = useRefresh(
     loanData ? loanData[0] : parseEther("0")
   );
-  const { data: _conversionRate2 } = useEggsToSonic(
-    loanData ? loanData[0] : parseEther("0")
-  );
+  const { data: covert } = useEggsToSonic();
+  const _conversionRate2 =
+    (covert && loanData ? covert * loanData[0] : parseEther("0")) /
+    parseEther("1");
 
   const [conversionRate, setConversionRate] = useState(undefined);
 

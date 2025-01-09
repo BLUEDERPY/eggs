@@ -8,11 +8,13 @@ import {
   Grid,
   Slider,
   Box,
+  Paper,
 } from "@mui/material";
 import { formatEther } from "viem";
 import useAccountWithBalance from "../hooks/useAccountWithBalance";
 import { nFormatter } from "../utils/formatters";
 import theme from "../themes";
+import { BalancesWidget } from "./BalancesWidget";
 
 interface BorrowInputsProps {
   borrowAmount: string;
@@ -35,41 +37,8 @@ export const BorrowInputs: React.FC<BorrowInputsProps> = ({
 }) => {
   const { data: sonic } = useAccountWithBalance();
   return (
-    <Stack spacing={0} pt={"36px"} position={"relative"}>
-      <Box
-        width={"120px"}
-        p={1}
-        position={"absolute"}
-        right={0}
-        top={0}
-        border={"1px solid"}
-        borderColor={theme.palette.primary.dark}
-      >
-        <Typography
-          sx={{ textAlign: "center" }}
-          variant="body2"
-          color="text.secondary"
-        >
-          Balances
-        </Typography>
-
-        <Typography variant="body2" color="text.secondary">
-          <Grid container direction="row" justifyContent="space-between">
-            <Grid item>EGGS:</Grid>{" "}
-            <Grid item textAlign={"right"}>
-              {nFormatter(Number(formatEther(balance) || "0"), 2)}
-            </Grid>
-          </Grid>
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          <Grid container direction="row" justifyContent="space-between">
-            <Grid item>SONIC:</Grid>{" "}
-            <Grid item textAlign={"right"}>
-              {nFormatter(Number(sonic?.formatted || "0"), 2)}{" "}
-            </Grid>
-          </Grid>
-        </Typography>
-      </Box>
+    <Stack spacing={0} pt={"70px"} position={"relative"}>
+      <BalancesWidget sonic={sonic} eggs={balance} />
       <Stack spacing={2}>
         <Box>
           <Typography gutterBottom>Loan Duration: {duration} days</Typography>

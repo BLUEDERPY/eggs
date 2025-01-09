@@ -12,7 +12,9 @@ interface Props {
 
 const ApproveButton = ({ eggs, days, writeContract }: Props) => {
   const { isConnected } = useAccountWithBalance();
-  const { data: sonic } = useEggsToSonic(eggs);
+  const { data: covert } = useEggsToSonic();
+  const sonic = (covert * eggs) / parseEther("1");
+
   const eggsToSonic = (Number(sonic) * 0.95).toString();
   const { abi, address } = EggsContract;
 

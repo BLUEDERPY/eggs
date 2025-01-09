@@ -1,4 +1,4 @@
-import { useState, useMemo, useContext, useEffect } from "react";
+import { useState, useMemo, useContext, useEffect, useCallback } from "react";
 import useEggsToSonic from "../../hooks/useEggsToSonic";
 import useEggsBalance from "../../hooks/useEggsBalance";
 import useBorrow from "../../hooks/useBorrow";
@@ -9,6 +9,8 @@ import { formatEther, parseEther } from "viem";
 import useRefresh2 from "../../hooks/useRefresh2";
 import useLoanByAddress from "../../hooks/useLoanByAddress";
 import { nFormatter } from "../../utils/formatters";
+import { getInterestFeeInEggs } from "../../utils/leverageCalculations";
+import useRefresh from "../../hooks/useRefresh";
 
 export const useLendingState = () => {
   const { borrow, isPending, isConfirming, isSuccess, isError, isUserError } =
@@ -16,8 +18,28 @@ export const useLendingState = () => {
   const { status, setStatus } = useContext(GlobalContext);
 
   const { data: balance, refetch } = useEggsBalance();
-  const { data: max } = useEggsToSonic(balance);
   const { data: loan, refetch: refetchLoan } = useLoanByAddress();
+  const borrowed = loan ? loan[1] : undefined;
+  const minDuration = useMemo(() => {
+    if (borrowed) return dateDiff(new Date(Number(loan[2]) * 1000), new Date());
+  }, [borrowed, loan]);
+
+  const [duration, _setDuration] = useState(minDuration || 0);
+  const { data: covert } = useEggsToSonic();
+  const maxEggs =
+    balance && covert ? (covert * balance) / parseEther("1") : undefined;
+  const max = useMemo(() => {
+    if (maxEggs) {
+      const maxFee = getInterestFeeInEggs(maxEggs, duration);
+
+      return ((maxEggs - maxFee) * BigInt(99)) / BigInt(100);
+    } else {
+      return BigInt(0);
+    }
+  }, [maxEggs, duration]);
+
+  console.log(max);
+
   useEffect(() => {
     if (isSuccess) {
       refetch();
@@ -55,11 +77,14 @@ export const useLendingState = () => {
     return days;
   }
 
-  const borrowed = loan ? loan[1] : undefined;
   const [borrowAmount, _setBorrowAmount] = useState(undefined);
-  const setBorrowAmount = (value: string) => {
-    _setBorrowAmount(parseEther(value));
-  };
+  const setBorrowAmount = (value: string) =>
+    useCallback(() => {
+      const _val = parseEther(value);
+      console.log(max, _val);
+      if (max && max > _val) _setBorrowAmount(_val);
+      else _setBorrowAmount(parseEther(max));
+    }, [max]);
   const { data: _conversionRate, isSuccess: refreshSuccess } = useRefresh2(
     borrowAmount || "0"
   );
@@ -70,14 +95,8 @@ export const useLendingState = () => {
   }, [_conversionRate, refreshSuccess]);
   //@ts-expect-error
 
-  const minDuration = useMemo(() => {
-    if (borrowed) return dateDiff(new Date(Number(loan[2]) * 1000), new Date());
-  }, [borrowed, loan]);
-
-  const [duration, _setDuration] = useState(minDuration || 0);
-
-  const { data: fee } = useGetLoanFee(conversionRate, duration);
-  const { data: additonalFee } = useGetLoanFee(
+  const fee = getInterestFeeInEggs(conversionRate || parseEther("0"), duration);
+  const additonalFee = getInterestFeeInEggs(
     borrowed || parseEther("0"),
     borrowed
       ? dateDiff(new Date(Number(loan[2]) * 1000), new Date()) - duration - 1
@@ -104,16 +123,22 @@ export const useLendingState = () => {
         protocolFee: 0,
         total: 0,
       };
-    const _additonalFee = additonalFee ? Number(formatEther(additonalFee)) : 0;
-    const amount = Number(formatEther(borrowAmount));
-    const borrowingFee = Number(formatEther(fee)) + _additonalFee; // 10% APR
-    const protocolFee = amount * 0.99; // 0.1% protocol fee
+    const borrowingFee = fee; // 10% APR
+    const protocolFee = conversionRate / BigInt(100); // 0.1% protocol fee
     return {
-      borrowingFee: borrowingFee,
-      protocolFee: protocolFee,
-      total: Number(formatEther(conversionRate)),
+      borrowingFee: Number(formatEther(borrowingFee)),
+      protocolFee: Number(formatEther(protocolFee)),
+      total: Number(formatEther(borrowingFee + protocolFee + conversionRate)),
+      borrowingFeeRaw: borrowingFee,
+      protocolFeeRaw: protocolFee,
+      totalRaw: borrowingFee + protocolFee + conversionRate,
     };
-  }, [borrowAmount, fee, conversionRate, additonalFee]);
+  }, [borrowAmount, fee, conversionRate, additonalFee, borrowed]);
+
+  const totalConverted =
+    covert && fees?.totalRaw
+      ? (covert * fees.totalRaw) / parseEther("1")
+      : undefined;
 
   const maxBorrowAmount = useMemo(() => {
     if (borrowed && borrowed < max) return Number(max - borrowed).toString();
@@ -122,20 +147,13 @@ export const useLendingState = () => {
   }, [max, borrowed]);
 
   const isValid = useMemo(() => {
-    return (
-      Number(borrowAmount) > 0 &&
-      Number(borrowAmount) <= Number(maxBorrowAmount) &&
-      duration >= 0 &&
-      duration <= 365
-    );
-  }, [borrowAmount, maxBorrowAmount, duration]);
+    return Number(borrowAmount) > 0 && duration >= 0 && duration <= 365;
+  }, [borrowAmount, max, duration]);
 
   const errorMessage = useMemo(() => {
     if (Number(borrowAmount) <= 0 && borrowAmount)
       return "Enter a borrow amount";
-    if (Number(borrowAmount) > Number(maxBorrowAmount)) {
-      return "Borrow amount exceeds maximum allowed";
-    }
+
     if (duration < 0 || duration > 365) {
       return "Duration must be between 0 and 365 days";
     }
@@ -153,13 +171,10 @@ export const useLendingState = () => {
 
   const setDuration = (_durattion) => {
     _setDuration(_durattion);
-    //// console.log(max);
-    //// console.log(borrowAmount);
-    if (max > borrowAmount) setBorrowAmount(maxBorrowAmount);
   };
 
   const handleBorrow = async () => {
-    borrow(borrowAmount, duration);
+    borrow(totalConverted, duration);
   };
   const onRepay = async () => {
     borrow(borrowAmount, duration);
@@ -172,7 +187,7 @@ export const useLendingState = () => {
   };
   return {
     minDuration,
-    borrowAmount,
+    borrowAmount: borrowAmount > max ? max : borrowAmount,
     setBorrowAmount,
     duration,
     setDuration,

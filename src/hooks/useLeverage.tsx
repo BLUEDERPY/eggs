@@ -3,7 +3,7 @@ import { EggsContract } from "../providers/contracts";
 import useWriteContractAndWaitForConfirm from "./useWriteContractAndWaitForConfirm";
 import useGetLeverageFee from "./useGetLeverageFee";
 
-export default function useLeverUp(sonic: bigint, days: number) {
+export default function useleverage(sonic: bigint, days: number) {
   const {
     writeContract,
     isError,
@@ -13,24 +13,24 @@ export default function useLeverUp(sonic: bigint, days: number) {
     isUserError,
     error,
     reset,
-  } = useWriteContractAndWaitForConfirm("leverUp");
+  } = useWriteContractAndWaitForConfirm("leverage");
   const { abi, address } = EggsContract;
   const { data: _fee } = useGetLeverageFee(sonic, days);
-  const leverUp = () => {
+  const leverage = () => {
    //// console.log(formatEther(sonic || "0"));
    //// console.log(formatEther(_fee || "0"));
    //// console.log(days);
     writeContract({
       abi,
       address: address as Address,
-      functionName: "leverUp",
+      functionName: "leverage",
       args: [sonic, days],
       value: _fee,
     });
   };
 
   return {
-    leverUp,
+    leverage,
     isError,
     isSuccess,
     isConfirming,

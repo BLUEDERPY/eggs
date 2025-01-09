@@ -12,7 +12,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { nFormatter } from "../utils/formatters";
-import useLeverUp from "../hooks/useLeverUp";
+import useleverage from "../hooks/useleverage";
 import { parseEther } from "viem";
 import { InfoIcon } from "lucide-react";
 

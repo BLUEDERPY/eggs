@@ -3,7 +3,7 @@ import { Stack, Typography } from "@mui/material";
 import useEggsToSonic from "../hooks/useEggsToSonic";
 
 export const SwapStats: React.FC = () => {
-  const { data: rate } = useEggsToSonic("1");
+  const { data: rate } = useEggsToSonic();
 
   return (
     <Stack spacing={1}>

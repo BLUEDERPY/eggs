@@ -6,7 +6,7 @@ import useWebSocket, { ReadyState } from "react-use-websocket";
 import { useVisibilityChange } from "@uidotdev/usehooks";
 
 import { useTheme } from "@mui/material/styles";
-const WS_URL = "wss://vote-leaderboard-2a3dbf662016.herokuapp.com"; // "ws://localhost:8000"; //"wss://vote-leaderboard-2a3dbf662016.herokuapp.com"; //
+const WS_URL = "wss://eggs-64815067aa3c.herokuapp.com/"; // "ws://localhost:8000"; //"wss://eggs-64815067aa3c.herokuapp.com/"; //
 import { reformatData } from "./FormatData";
 
 export const ChartComponent = (props) => {
@@ -69,10 +69,15 @@ export const ChartComponent = (props) => {
         const _data = reformatData(rawData, candelSize);
         series.setData(_data);
 
-        chart.timeScale().fitContent();
-        chart.timeScale().scrollToPosition(5);
-
-        ready === 1 && setData(rawData);
+        ready === 1 &&
+          setData((data) => {
+            if (data.length === 0) {
+              chart.timeScale().fitContent();
+              return rawData;
+            } else {
+              return data;
+            }
+          });
       }
     }
   }, [series, chart, lastMessage, candelSize, ready]);
@@ -101,7 +106,7 @@ export const ChartComponent = (props) => {
 
       //series?.update(val);
     }
-  }, [series, chart, lastMessage, updatedata, candelSize, ready]);
+  }, [series, chart, lastMessage, updatedata, candelSize]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -113,12 +118,17 @@ export const ChartComponent = (props) => {
         textColor: "#DDD",
         borderRadius: "10px",
       },
+
       grid: {
         vertLines: { color: "#444" },
         horzLines: { color: "#444" },
       },
       width: chartContainerRef.current.clientWidth,
-      height: xs ? window.innerHeight - 410 : window.innerHeight - 432,
+      height: xs
+        ? window.innerHeight - 410
+        : window.innerHeight - 432 > 406
+        ? window.innerHeight - 432
+        : 406,
     });
     chart.timeScale().applyOptions({
       barSpacing: 10,
@@ -131,6 +141,10 @@ export const ChartComponent = (props) => {
       borderVisible: false,
       wickUpColor: theme.palette.primary.main,
       wickDownColor: "#ef5350",
+      priceFormat: {
+        minMove: 0.0000001,
+        precision: 7,
+      },
     });
 
     // simulate real-time data

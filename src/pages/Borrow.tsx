@@ -7,10 +7,10 @@ const LendingPage: React.FC = () => {
   return (
     <>
       <Grid item xs={12} alignSelf="center">
-        <Typography padding={1} align="center" variant="h5">
+        <Typography padding={0} align="center" variant="h5">
           LENDING
         </Typography>
-        <Typography variant="subtitle1" align="center" gutterBottom>
+        <Typography variant="subtitle2" align="center" gutterBottom>
           Borrow SONIC against your EGGS collateral
         </Typography>
       </Grid>

@@ -1,5 +1,5 @@
 export const EggsContract = {
-  address: "0x8C1d46cC5e30B129D553b10954444DF005bEb427", //"0x5FbDB2315678afecb367f032d93F642f64180aa3",
+  address: "0xa583f57798f9326a026abd9e5053af686413b03f", //"0x5FbDB2315678afecb367f032d93F642f64180aa3",
   abi: [
     { type: "constructor", inputs: [], stateMutability: "payable" },
     { type: "fallback", stateMutability: "payable" },
@@ -51,7 +51,14 @@ export const EggsContract = {
     },
     {
       type: "function",
-      name: "FEES",
+      name: "FEES_BUY",
+      inputs: [],
+      outputs: [{ name: "", type: "uint16", internalType: "uint16" }],
+      stateMutability: "view",
+    },
+    {
+      type: "function",
+      name: "FEES_SELL",
       inputs: [],
       outputs: [{ name: "", type: "uint16", internalType: "uint16" }],
       stateMutability: "view",
@@ -90,13 +97,6 @@ export const EggsContract = {
     },
     {
       type: "function",
-      name: "MAX",
-      inputs: [],
-      outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
-      stateMutability: "view",
-    },
-    {
-      type: "function",
       name: "MIN",
       inputs: [],
       outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
@@ -120,6 +120,16 @@ export const EggsContract = {
       type: "function",
       name: "SONICtoEGGS",
       inputs: [{ name: "value", type: "uint256", internalType: "uint256" }],
+      outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
+      stateMutability: "view",
+    },
+    {
+      type: "function",
+      name: "SONICtoEGGSLev",
+      inputs: [
+        { name: "value", type: "uint256", internalType: "uint256" },
+        { name: "fee", type: "uint256", internalType: "uint256" },
+      ],
       outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
       stateMutability: "view",
     },
@@ -225,7 +235,7 @@ export const EggsContract = {
       type: "function",
       name: "flashClosePosition",
       inputs: [],
-      outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
+      outputs: [],
       stateMutability: "nonpayable",
     },
     {
@@ -240,7 +250,7 @@ export const EggsContract = {
       name: "getBuyAmount",
       inputs: [{ name: "amount", type: "uint256", internalType: "uint256" }],
       outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
-      stateMutability: "nonpayable",
+      stateMutability: "view",
     },
     {
       type: "function",
@@ -264,7 +274,7 @@ export const EggsContract = {
         { name: "numberOfDays", type: "uint256", internalType: "uint256" },
       ],
       outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
-      stateMutability: "nonpayable",
+      stateMutability: "pure",
     },
     {
       type: "function",
@@ -331,27 +341,23 @@ export const EggsContract = {
     },
     {
       type: "function",
-      name: "leverUp",
+      name: "leverage",
       inputs: [
         { name: "sonic", type: "uint256", internalType: "uint256" },
         { name: "numberOfDays", type: "uint256", internalType: "uint256" },
       ],
-      outputs: [
-        { name: "", type: "uint256", internalType: "uint256" },
-        { name: "", type: "uint256", internalType: "uint256" },
-        { name: "", type: "uint256", internalType: "uint256" },
-      ],
+      outputs: [],
       stateMutability: "payable",
     },
     {
       type: "function",
-      name: "leverUpAmount",
+      name: "leverageFee",
       inputs: [
         { name: "eggs", type: "uint256", internalType: "uint256" },
         { name: "numberOfDays", type: "uint256", internalType: "uint256" },
       ],
       outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
-      stateMutability: "nonpayable",
+      stateMutability: "view",
     },
     {
       type: "function",
@@ -392,6 +398,13 @@ export const EggsContract = {
       type: "function",
       name: "renounceOwnership",
       inputs: [],
+      outputs: [],
+      stateMutability: "nonpayable",
+    },
+    {
+      type: "function",
+      name: "sell",
+      inputs: [{ name: "eggs", type: "uint256", internalType: "uint256" }],
       outputs: [],
       stateMutability: "nonpayable",
     },
@@ -547,13 +560,13 @@ export const EggsContract = {
           internalType: "uint256",
         },
         {
-          name: "recieved",
+          name: "price",
           type: "uint256",
           indexed: false,
           internalType: "uint256",
         },
         {
-          name: "sent",
+          name: "volumeInSonic",
           type: "uint256",
           indexed: false,
           internalType: "uint256",

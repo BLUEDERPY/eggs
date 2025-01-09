@@ -4,7 +4,7 @@ import useWebSocket from "react-use-websocket";
 import { Address, formatEther, parseEther } from "viem";
 import { useAccount, useReadContract } from "wagmi";
 import { EggsContract } from "../providers/contracts";
-const WS_URL = "wss://vote-leaderboard-2a3dbf662016.herokuapp.com"; //"ws://localhost:8000"; //"wss://vote-leaderboard-2a3dbf662016.herokuapp.com"; //
+const WS_URL = "wss://eggs-64815067aa3c.herokuapp.com/"; //"ws://localhost:8000"; //"wss://eggs-64815067aa3c.herokuapp.com/"; //
 
 export default function useRefresh(eggs) {
   const documentVisible = useVisibilityChange();

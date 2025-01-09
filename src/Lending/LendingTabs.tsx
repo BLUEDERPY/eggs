@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Stack, Tab, Tabs } from "@mui/material";
+import { Box, Container, Stack, Tab, Tabs } from "@mui/material";
 import { BorrowMoreTab } from "./Tabs/BorrowMoreTab";
 import { RemoveCollateralTab } from "./Tabs/RemoveCollateralTab";
 import { ExtendLoanTab } from "./Tabs/ExtendLoanTab";
@@ -36,24 +36,34 @@ export const LendingTabs = () => {
   };
 
   return (
-    <Stack spacing={3} px={"1px"}>
-      <Box>
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          variant="fullWidth"
-          aria-label="lending options"
-        >
-          <Tab label="Borrow" />
-          <Tab label="Remove" />
-          <Tab label="Extend" />
-          <Tab label="Close" />
-        </Tabs>
-      </Box>
+    <Stack
+      spacing={3}
+      px={"1px"}
+      sx={{
+        maxWidth: {
+          xs: "calc(100dvw - 30px)",
+          sm: "450px",
+          md: "800px",
+        },
+      }}
+    >
+      <Tabs
+        value={value}
+        onChange={handleChange}
+        variant="fullWidth"
+        aria-label="lending options"
+        scrollButtons="auto"
+      >
+        <Tab label="Borrow" />
+        <Tab label="Remove" />
+        <Tab label="Extend" />
+        <Tab label="Close" />
+      </Tabs>
+
       <Box
         sx={{
           py: { xs: 0 },
-          px: { xs: "0", sm: 6, md: 8 },
+          px: { xs: 2, sm: 6, md: 8 },
           mt: "0 !important",
         }}
       >

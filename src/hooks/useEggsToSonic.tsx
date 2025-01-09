@@ -5,7 +5,7 @@ import { parseEther } from "viem";
 import { useEffect, useState } from "react";
 import useRefresh from "./useRefresh";
 
-export default function useEggsToSonic(eggs: string) {
+export default function useEggsToSonic() {
   const { abi, address } = EggsContract;
   const { address: _address } = useAccount();
   const { data, isSuccess, isPending, isError, error, refetch } =
@@ -13,9 +13,16 @@ export default function useEggsToSonic(eggs: string) {
       abi,
       address: address as Address,
       functionName: "EGGStoSONIC",
-      args: [eggs],
+      args: [parseEther("1")],
     });
 
   ////console.log(data);
-  return { data, isSuccess, isPending, isError, error, refetch };
+  return {
+    data,
+    isSuccess,
+    isPending,
+    isError,
+    error,
+    refetch,
+  };
 }

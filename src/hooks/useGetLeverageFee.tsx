@@ -8,7 +8,7 @@ export default function useGetLeverageFee(amount: string, days: number) {
     useReadContract({
       abi,
       address: address as Address,
-      functionName: "leverUpAmount",
+      functionName: "leverageFee",
       args: [amount, days],
     });
 

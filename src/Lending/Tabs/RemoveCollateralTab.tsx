@@ -14,6 +14,7 @@ import useRemoveCollateral from "../../hooks/useRemoveCollateral";
 import LoadingScreen from "../../UnwindComponents/LoadingScreen";
 import useEggsBalance from "../../hooks/useEggsBalance";
 import useAccountWithBalance from "../../hooks/useAccountWithBalance";
+import { BalancesWidget } from "../BalancesWidget";
 
 export const RemoveCollateralTab = () => {
   const { data: balance, refetch: refetchBal } = useAccountWithBalance();
@@ -21,6 +22,7 @@ export const RemoveCollateralTab = () => {
   const [removalAmount, setRemovalAmount] = useState("0");
   const { removeCollateral, isSuccess, isConfirming, isPending } =
     useRemoveCollateral();
+  const { data: eggs } = useEggsBalance();
 
   const collateral = loanData ? Number(formatEther(loanData[0])) : 0;
 
@@ -45,29 +47,17 @@ export const RemoveCollateralTab = () => {
   return (
     <Stack
       spacing={3}
-      minHeight={"424px"}
+      minHeight={"458px"}
       justifyContent={"center"}
       position={"relative"}
+      pt={"0px"}
     >
-      <Typography
-        sx={{ textAlign: "right" }}
-        variant="body2"
-        color="text.secondary"
-        position={"absolute"}
-        right={0}
-        top={0}
-      >
-        Balance: {Number(balance?.formatted).toFixed(4)} SONIC
-      </Typography>
+      <BalancesWidget sonic={balance} eggs={eggs} />
 
       {isConfirming || isPending ? (
         <LoadingScreen />
       ) : (
         <>
-          <Alert severity="info">
-            Maximum removable amount: {maxRemovable.toFixed(2)} EGGS
-          </Alert>
-
           <Stack spacing={2}>
             <Typography variant="subtitle2">Remove Collateral</Typography>
             <TextField
@@ -99,6 +89,9 @@ export const RemoveCollateralTab = () => {
               )} EGGS`}
             />
           </Stack>
+          <Alert severity="info">
+            Maximum removable amount: {maxRemovable.toFixed(2)} EGGS
+          </Alert>
 
           <Button
             variant="contained"

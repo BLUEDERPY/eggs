@@ -7,12 +7,15 @@ import { formatEther } from "viem";
 import useExtend from "../../hooks/useExtend";
 import useAccountWithBalance from "../../hooks/useAccountWithBalance";
 import LoadingScreen from "../../UnwindComponents/LoadingScreen";
+import { BalancesWidget } from "../BalancesWidget";
+import useEggsBalance from "../../hooks/useEggsBalance";
 
 export const ExtendLoanTab = () => {
   const { data: loanData, refetch: refetchLoan } = useLoanByAddress();
   const [extensionDays, setExtensionDays] = useState(1);
   const { extendLoan, isSuccess, isConfirming, isPending } = useExtend();
   const { data: balance, refetch } = useAccountWithBalance();
+  const { data: eggs } = useEggsBalance();
 
   const currentExpiry = loanData
     ? new Date(Number(loanData[2]) * 1000)
@@ -33,20 +36,12 @@ export const ExtendLoanTab = () => {
   return (
     <Stack
       spacing={3}
-      minHeight={"424px"}
+      minHeight={"458px"}
       justifyContent={"center"}
       position={"relative"}
+      pt={"70px"}
     >
-      <Typography
-        sx={{ textAlign: "right" }}
-        variant="body2"
-        color="text.secondary"
-        position={"absolute"}
-        right={0}
-        top={0}
-      >
-        Balance: {Number(balance?.formatted).toFixed(4)} SONIC
-      </Typography>
+      <BalancesWidget sonic={balance} eggs={eggs} />
 
       {isConfirming || isPending ? (
         <LoadingScreen />

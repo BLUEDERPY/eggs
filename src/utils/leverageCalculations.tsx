@@ -24,15 +24,15 @@ export function getInterestFeeInEggs(
  * @returns Maximum EGGS amount that can be borrowed
  */
 export function getMaxEggsFromFee(
-  leverageAmount: bigint,
+  leverageFee: bigint,
   numberOfDays: number
 ): bigint {
   // Rearranging the formula from getInterestFeeInEggs:
   // fee = (amount * interest) / 100 / FEE_BASE_1000
   // amount = (fee * 100 * FEE_BASE_1000) / interest
   // Solving for eggs where:
-  // leverageAmount = mintFee + interest
-  // leverageAmount = (eggs * BUY_FEE_REVERSE / FEE_BASE_1000) + (eggs * interest / 100 / FEE_BASE_1000)
+  // leverageFee = mintFee + interest
+  // leverageFee = (eggs * BUY_FEE_REVERSE / FEE_BASE_1000) + (eggs * interest / 100 / FEE_BASE_1000)
 
   const interest = parseUnits(
     ((3900 * numberOfDays) / 365 + 100).toString(),
@@ -40,13 +40,13 @@ export function getMaxEggsFromFee(
   );
 
   // Combine terms:
-  // leverageAmount = eggs * (BUY_FEE_REVERSE + interest) / (100 * FEE_BASE_1000)
-  // eggs = leverageAmount * (100 * FEE_BASE_1000) / (BUY_FEE_REVERSE + interest)
+  // leverageFee = eggs * (BUY_FEE_REVERSE + interest) / (100 * FEE_BASE_1000)
+  // eggs = leverageFee * (100 * FEE_BASE_1000) / (BUY_FEE_REVERSE + interest)
 
   const denominator =
     BigInt(BUY_FEE_REVERSE) * BigInt(FEE_BASE_1000) + interest;
   return (
-    ((leverageAmount - parseEther("0.1")) *
+    ((leverageFee - parseEther("0.1")) *
       BigInt(FEE_BASE_1000) *
       BigInt(FEE_BASE_1000)) /
     denominator
@@ -59,7 +59,7 @@ export function getMaxEggsFromFee(
  * @param numberOfDays Loan duration in days
  * @returns Leverage amount in EGGS
  */
-export function getLeverageAmount(eggs: bigint, numberOfDays: number): bigint {
+export function getleverageFee(eggs: bigint, numberOfDays: number): bigint {
   const mintFee =
     (BigInt(eggs) * BigInt(BUY_FEE_REVERSE)) / BigInt(FEE_BASE_1000);
   const interest = getInterestFeeInEggs(eggs, numberOfDays);

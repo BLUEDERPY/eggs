@@ -18,7 +18,7 @@ import { LeverageInputs } from "./LeverageInputs";
 import { PotentialReturns } from "./PotentialReturns";
 import useAccountWithBalance from "../hooks/useAccountWithBalance";
 import {
-  getLeverageAmount,
+  getleverageFee,
   getMaxEggsFromFee,
 } from "../utils/leverageCalculations";
 import useRefresh from "../hooks/useRefresh";
@@ -27,7 +27,7 @@ import useLoanByAddress from "../hooks/useLoanByAddress";
 import { LoanMetrics } from "../Lending/Sidebar/LoanMetrics";
 import { LendingTabs } from "../Lending/LendingTabs";
 import theme from "../themes";
-import useLeverUp from "../hooks/useLeverUp";
+import useleverage from "../hooks/useleverage";
 import LoadingScreen from "../UnwindComponents/LoadingScreen";
 
 export const LeverageCalculator = () => {
@@ -38,27 +38,27 @@ export const LeverageCalculator = () => {
   const { data: balance, refetch: refetchBal } = useAccountWithBalance();
   const sonicBalance = balance ? balance.formatted : "0";
 
-  const { data: conversionRate } = useEggsToSonic("1");
+  const { data: conversionRate } = useEggsToSonic();
   const eggsPerSonic = conversionRate ? Number(formatEther(conversionRate)) : 0;
   const { data: _requiredEggs } = useSonicToEggs(parseEther(sonicAmount));
   const requiredEggs = _requiredEggs ? Number(formatEther(_requiredEggs)) : 0;
 
   const { data: _eggsBal } = useRefresh(balance?.value || parseEther("0"));
 
-  const fee = getLeverageAmount(parseEther(sonicAmount || "0"), duration);
+  const fee = getleverageFee(parseEther(sonicAmount || "0"), duration);
   const max = getMaxEggsFromFee(balance?.value || BigInt(0), duration);
   //// console.log(fee);
   const loanFee = fee ? Number(formatEther(fee)) : 0;
 
   const leverageX = Number(sonicAmount) / loanFee;
 
-  const { leverUp, isSuccess, isPending, isConfirming } = useLeverUp(
+  const { leverage, isSuccess, isPending, isConfirming } = useleverage(
     parseEther(sonicAmount),
     duration
   );
 
   const handleLeveragePosition = async () => {
-    leverUp();
+    leverage();
   };
 
   useEffect(() => {

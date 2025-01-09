@@ -4,7 +4,7 @@ import useWebSocket from "react-use-websocket";
 import { Address } from "viem";
 import { useAccount, useReadContract } from "wagmi";
 import { EggsContract } from "../providers/contracts";
-const WS_URL = "wss://vote-leaderboard-2a3dbf662016.herokuapp.com"; // "ws://localhost:8000";
+const WS_URL = "wss://eggs-64815067aa3c.herokuapp.com/"; // "ws://localhost:8000";
 
 export default function useRefresh2(eggs) {
   const documentVisible = useVisibilityChange();
@@ -38,9 +38,14 @@ export default function useRefresh2(eggs) {
       args: [eggs],
     });
 
-  if (lastJsonMessage && lastJsonMessage !== "ping") {
+  if (
+    lastJsonMessage &&
+    lastJsonMessage?.data &&
+    lastJsonMessage?.data.length == 1 &&
+    lastJsonMessage !== "ping"
+  ) {
+    refetch();
   }
-  refetch();
 
   return {
     data,

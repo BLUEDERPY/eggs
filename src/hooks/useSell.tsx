@@ -1,8 +1,11 @@
-import { Address, formatEther, parseEther } from "viem";
+import { Address, parseEther } from "viem";
 import { EggsContract } from "../providers/contracts";
 import useWriteContractAndWaitForConfirm from "./useWriteContractAndWaitForConfirm";
+import useAccountWithBalance from "./useAccountWithBalance";
+import useEggsBalance from "./useEggsBalance";
+import { useAccount } from "wagmi";
 
-export default function useBorrow() {
+export default function useBuy() {
   const {
     writeContract,
     isError,
@@ -14,17 +17,18 @@ export default function useBorrow() {
   } = useWriteContractAndWaitForConfirm("borrow");
   const { abi, address } = EggsContract;
 
-  const borrow = (sonicAmount: string, days: number) => {
-    console.log(formatEther(sonicAmount));
+  const { data } = useEggsBalance();
+
+  const sell = (eggAmount: string) => {
     writeContract({
       abi,
       address: address as Address,
-      functionName: "borrow",
-      args: [sonicAmount, days],
+      functionName: "sell",
+      args: [data < eggAmount ? data : eggAmount],
     });
   };
   return {
-    borrow,
+    sell,
     isError,
     isSuccess,
     isConfirming,

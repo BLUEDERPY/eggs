@@ -8,6 +8,7 @@ import useAccountWithBalance from "../hooks/useAccountWithBalance";
 import useEggsBalance from "../hooks/useEggsBalance";
 import { formatEther, parseEther } from "viem";
 import useBuy from "../hooks/useBuy";
+import useSell from "../hooks/useSell";
 import useSonicToEggs from "../hooks/useSonicToEggs";
 import LoadingScreen from "../UnwindComponents/LoadingScreen";
 
@@ -19,16 +20,31 @@ export const SwapForm: React.FC = () => {
   const { data: balance, refetch: refetchSonic } = useAccountWithBalance();
   const { data: eggsBalance, refetch: refetchEggs } = useEggsBalance();
   const { buy, isConfirming, isPending, isSuccess } = useBuy();
+  const {
+    sell,
+    isConfirming: isConfirmingSell,
+    isPending: isPendingSell,
+    isSuccess: isSuccessSell,
+  } = useSell();
+
   const sonicBalance = balance ? Number(balance.formatted).toFixed(6) : "0";
   const eggsBalanceFormatted = Number(formatEther(eggsBalance || "0"));
 
   const { data: conversionRate } = useSonicToEggs(
-    parseEther(fromAmount || "0")
+    parseEther(fromAmount.toString() || "0")
+  );
+  const { data: conversionRateToSonic } = useEggsToSonic(
+    parseEther(fromAmount.toString() || "0")
   );
 
-  const toAmount = conversionRate
-    ? (Number(formatEther(conversionRate)) * 0.99).toFixed(6)
-    : "";
+  const toAmount =
+    conversionRate && conversionRateToSonic
+      ? (
+          Number(
+            formatEther(isEggsToSonic ? conversionRateToSonic : conversionRate)
+          ) * 0.99
+        ).toFixed(6)
+      : "";
 
   const handleFromAmountChange = (value: string) => {
     setFromAmount(value);
@@ -36,23 +52,26 @@ export const SwapForm: React.FC = () => {
 
   const handleSwapDirection = () => {
     setIsEggsToSonic(!isEggsToSonic);
-    setFromAmount("");
+    setFromAmount(toAmount);
   };
   const handleBuy = () => {
     buy(fromAmount);
   };
+  const handleSell = () => {
+    sell(parseEther(fromAmount.toString()));
+  };
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isSuccess || isSuccessSell) {
       refetchEggs();
       refetchSonic();
       setFromAmount("");
     }
-  }, [isSuccess]);
+  }, [isSuccess, isSuccessSell]);
 
   return (
     <Stack spacing={2} minHeight={"352px"}>
-      {isConfirming || isPending ? (
+      {isConfirming || isPending || isConfirmingSell || isPendingSell ? (
         <LoadingScreen />
       ) : (
         <>
@@ -88,8 +107,15 @@ export const SwapForm: React.FC = () => {
             disabled
           />
           <SwapButton
-            onClick={isEggsToSonic ? handleBuy : handleBuy}
-            disabled={!fromAmount || Number(fromAmount) <= 0}
+            onClick={isEggsToSonic ? handleSell : handleBuy}
+            disabled={
+              !fromAmount ||
+              Number(fromAmount) <= 0 ||
+              Number(fromAmount) >
+                (isEggsToSonic
+                  ? Number(eggsBalanceFormatted)
+                  : Number(sonicBalance))
+            }
           />
         </>
       )}

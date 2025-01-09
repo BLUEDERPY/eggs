@@ -4,6 +4,7 @@ import { GlobalContext } from "../providers/global-provider";
 import useEggsToSonic from "../hooks/useEggsToSonic";
 import useSonicToEggs from "../hooks/useSonicToEggs";
 import useRefresh2 from "../hooks/useRefresh2";
+import { parseEther } from "viem";
 
 interface Props {
   sonicBorrow: number;
@@ -16,7 +17,8 @@ const BorrowBox = ({ sonicBorrow, setSonicBorrow }: Props) => {
 
   const eggsBal = eggsData ? Number(eggsData).toFixed(2).toString() : "0";
 
-  const { data: max } = useEggsToSonic(eggsBal);
+  const { data: __max } = useEggsToSonic();
+  const max = (__max * eggsBal) / parseEther("1");
 
   const { data } = useRefresh2(sonicBorrow);
 
