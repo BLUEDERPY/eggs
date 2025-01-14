@@ -1,5 +1,5 @@
 import React, { createContext, useState } from "react";
-import useEggsBalance from "../hooks/useEggsBalance";
+import { useEggsData } from "./data-provider";
 
 interface GlobalContextProps {
   width: number;
@@ -26,7 +26,7 @@ export const GlobalContext = createContext<GlobalContextProps>({
 });
 
 export const GlobalProvider = (props: Props) => {
-  const balance = useEggsBalance();
+  const { userEggsBalance: balance } = useEggsData();
 
   const [globalContext, setGlobalContext] = useState({
     width: 0,

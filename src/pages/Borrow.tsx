@@ -1,7 +1,7 @@
 import React from "react";
 import { Grid, Typography, Box } from "@mui/material";
-import { LendingInterface } from "../Lending/LendingInterface";
-import { LendingStats } from "../Lending/LendingStats";
+import { LendingInterface } from "../components/Lending/LendingInterface";
+import { LendingStats } from "../components/Lending/LendingStats";
 
 const LendingPage: React.FC = () => {
   return (

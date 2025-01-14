@@ -1,6 +1,6 @@
 import { useState } from "react";
 //@ts-expect-error
-import { ChartComponent } from "../ChartComponents/ChartComponents";
+import { ChartComponent } from "../components/Chart/ChartComponents";
 import {
   Box,
   Grid,
@@ -10,7 +10,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import theme from "../themes";
-import { SwapWidget } from "../Swap/SwapWidget";
+import { SwapWidget } from "../components/Swap/SwapWidget";
 
 const HomePage = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));

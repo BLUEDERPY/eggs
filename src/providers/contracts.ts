@@ -1,5 +1,5 @@
 export const EggsContract = {
-  address: "0xa583f57798f9326a026abd9e5053af686413b03f", //"0x5FbDB2315678afecb367f032d93F642f64180aa3",
+  address: "0x270E88f8683660553e8BA4eB2ad7c91A1710d769", //"0x5FbDB2315678afecb367f032d93F642f64180aa3",
   abi: [
     { type: "constructor", inputs: [], stateMutability: "payable" },
     { type: "fallback", stateMutability: "payable" },

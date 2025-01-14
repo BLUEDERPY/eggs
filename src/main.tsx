@@ -12,6 +12,7 @@ const queryClient = new QueryClient();
 import { ThemeProvider } from "@emotion/react";
 import theme from "./themes.ts";
 import { CssBaseline } from "@mui/material/";
+import { EggsProvider } from "./providers/data-provider.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -21,7 +22,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <QueryClientProvider client={queryClient}>
           <GlobalProvider>
             <ConnectKitProvider>
-              <App />
+              <EggsProvider>
+                <App />
+              </EggsProvider>
             </ConnectKitProvider>
           </GlobalProvider>
         </QueryClientProvider>

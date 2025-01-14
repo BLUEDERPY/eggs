@@ -1,4 +1,5 @@
 import { http, createConfig, fallback, unstable_connector } from "wagmi";
+import { sepolia } from "wagmi/chains";
 import { injected, metaMask } from "wagmi/connectors";
 const auroraTestnet = {
   id: 57054,
@@ -16,11 +17,11 @@ const auroraTestnet = {
   testnet: true,
 };
 export const config = createConfig({
-  chains: [auroraTestnet],
+  chains: [sepolia],
   connectors: [injected()],
 
   transports: {
     // RPC URL for each chain
-    [57054]: unstable_connector(injected),
+    [sepolia.id]: [injected()],
   },
 });

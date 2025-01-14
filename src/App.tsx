@@ -5,10 +5,10 @@ import LoopPage from "./pages/Loop";
 import BorrowPage from "./pages/Borrow";
 
 import HomePage from "./pages/Home";
-import { Header } from "./Header/Header";
+import { Header } from "./components/Header/Header";
 
-import Navigation from "./Header/Navigation";
-import { Footer } from "./Footer/Footer";
+import Navigation from "./components/Header/Navigation";
+import { Footer } from "./components/Footer/Footer";
 import { BackgroundOverlay } from "./ui/BackgroundOverlay";
 
 export const dynamic = "force-dynamic";

@@ -46,7 +46,7 @@ export function getMaxEggsFromFee(
   const denominator =
     BigInt(BUY_FEE_REVERSE) * BigInt(FEE_BASE_1000) + interest;
   return (
-    ((leverageFee - parseEther("0.1")) *
+    ((leverageFee - parseEther("0.001")) *
       BigInt(FEE_BASE_1000) *
       BigInt(FEE_BASE_1000)) /
     denominator

@@ -1,6 +1,6 @@
 import { Grid, Typography } from "@mui/material";
 
-import LoanWidget from "../UnwindComponents/UnwindWidget";
+import LoanWidget from "../components/UnwindWidget";
 
 const UnwindPage = () => {
   return (

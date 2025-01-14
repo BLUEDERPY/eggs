@@ -1,6 +1,5 @@
 import { Grid, Typography } from "@mui/material";
-import { LeverageCalculator } from "../LeverageCalculator/LeverageCalculator";
-import useLoanByAddress from "../hooks/useLoanByAddress";
+import { LeverageCalculator } from "../components/Leverage/LeverageCalculator";
 
 const LoopPage = () => {
   return (
